@@ -1,0 +1,45 @@
+:root {
+  --primary-red: #e54242;
+  --primary-font-color: #ffffff;
+  --backgound-color: #232a2e;
+  --primary-dark: #707070;
+  --primary-purple: #ad72ff;
+  font-size: 16px;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+html,
+body {
+  position: relative;
+  max-width: 100vw;
+  height: 100%;
+  overflow-x: hidden;
+  color: var(--primary-font-color);
+  background-color: var(--backgound-color);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+input,
+button,
+select,
+textarea {
+  color: var(--primary-font-color);
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
+  border: none;
+  border-radius: 0;
+}
