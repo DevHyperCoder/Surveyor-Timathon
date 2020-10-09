@@ -2,6 +2,12 @@
   // CTA Button
   import CTAButton from "./_components/CTAButton/index.svelte";
   
+  import { redirect } from "@sveltech/routify";
+
+  function redirectToHomePage(){
+    $redirect('/');
+  }
+
   // Svelte Store => User import
   import { user } from "../store";
 
@@ -62,7 +68,7 @@ flex-wrap: wrap;
 </style>
 
 <template>
-  <div class="bg">
+  <div class="bg parent-height-100">
     <section>
       <article class="img-container">
         <h1>Surveyor</h1>
@@ -71,7 +77,7 @@ flex-wrap: wrap;
       <article>
         {#if userObj}
           <h2>Welcome {userObj.displayName}!</h2>
-          <CTAButton Class="cta" value="See your surveys ->"/>
+          <CTAButton onClick={redirectToHomePage} Class="cta" value="See your surveys ->"/>
         {:else}
           <h1>Login</h1>
           <CTAButton Class="google cta" onClick={login} value="Sign in with Google"/>

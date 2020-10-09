@@ -1,9 +1,15 @@
 <script>
   import CTAButton from "../CTAButton/index.svelte";
 
+  import {redirect} from '@sveltech/routify';
+
   import { metatags } from "@sveltech/routify";
   metatags.title = "Surveyor";
   metatags.description = "Quick and easy surveys";
+
+  function redirectToLogin(){
+    $redirect('/login')
+  }
 </script>
 
 <style>
@@ -53,6 +59,6 @@
   <div class="container">
     <h1>Surveyor</h1>
     <h2>Online platform to take surveys easily and effciently</h2>
-    <CTAButton Class="cta" value="Get Started" />
+    <CTAButton onClick={redirectToLogin} Class="cta" value="Get Started" />
   </div>
 </template>
