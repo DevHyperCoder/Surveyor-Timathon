@@ -6,23 +6,32 @@
   // Firestore
   import { db } from "../firebase";
 
-// User store
+  // User store
   import { user } from "../store";
-  
+
   let questions: IQuestion[] = [];
 
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
 
-// State
+  // State
   let surveyTitle: string;
   let surveyId: string;
 
   $: {
     surveyTitle;
     console.log(surveyTitle);
+    updateTitle(surveyTitle);
   }
-
+  
+  async function updateTitle(surveyTitle: string) {
+    console.log(surveyId, surveyTitle);
+    if (surveyId) {
+      db.collection("surveys")
+        .doc(surveyId)
+        .set({ surveyTitle }, { merge: true });
+    }
+  }
   async function addToQuestionList() {
     // Create a new survey if it does not exist
     if (!surveyId) {
@@ -31,12 +40,14 @@
       });
       surveyId = newSurvey.id;
     }
-
+    console.log("click");
     let arrlen = questions.length.toString();
     questions = [...questions, { type: "p", text: "", id: arrlen }];
   }
 
   function handleEdit(question: IQuestion) {
+    console.log(question);
+
     const surveyCollectionRef = db.collection("surveys");
     try {
       surveyCollectionRef
@@ -54,6 +65,7 @@
       return {
         type: q.type,
         text: q.text,
+        id: q.id,
       };
     }
   }
@@ -70,15 +82,11 @@
 
   <!-- FOR EACH LOOP -->
   {#if questions}
-    
-  {#each questions as question}
-  
-  <Question onEdit={(q)=>handleEdit(q)} question={question} />
-  
+    {#each questions as question}
+      <Question onEdit={(q) => handleEdit(q)} isAnswering={false} {question} />
     {/each}
-    
   {:else}
-      <p>Create a new question!</p>
+    <p>Create a new question!</p>
   {/if}
   <button on:click={addToQuestionList}>+</button>
   <p>{surveyId}</p>
