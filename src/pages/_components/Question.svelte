@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IQuestion } from "../../types/IQuestion";
 
+  let text: string | number;
+  export let answer: number | string;
+  export let questionText: string|number;
   export let question: IQuestion;
   export let isAnswering: boolean = true;
   export let onEdit:
@@ -20,7 +23,6 @@
       onEdit(question, isAnswering);
     }, 750);
   }
-  let text: string | number;
   $: {
     text;
     if (isAnswering) {
@@ -28,6 +30,17 @@
     }
   }
 </script>
+
+<style>
+  .question {
+    width: 90%;
+    background-color: aliceblue;
+    color: black;
+    margin: 1rem;
+    border-radius: 10px 10px 10px 10px;
+    padding: 0.8rem;
+  }
+</style>
 
 <template>
   <div class="question">
@@ -57,15 +70,19 @@
       {/if}
     {:else}
       <!-- Question text -->
+      {#if answer}
+      <h2>{questionText}</h2>
+      <p>{answer}</p>
+      {:else}
+        <!-- Choices -->
       <h2 contenteditable bind:textContent={question.text} />
-
-      <!-- Choices -->
-      <select bind:value={question.type}>
-        <option value="mcq" default>MCQ</option>
-        <option value="sh-a">Short Answer</option>
-        <option value="p">Paragraph</option>
-        <option value="num">Number</option>
-      </select>
+        <select bind:value={question.type}>
+          <option value="mcq" default>MCQ</option>
+          <option value="sh-a">Short Answer</option>
+          <option value="p">Paragraph</option>
+          <option value="num">Number</option>
+        </select>
+      {/if}
     {/if}
   </div>
 </template>

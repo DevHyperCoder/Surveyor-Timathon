@@ -23,7 +23,7 @@
     console.log(surveyTitle);
     updateTitle(surveyTitle);
   }
-  
+
   async function updateTitle(surveyTitle: string) {
     console.log(surveyId, surveyTitle);
     if (surveyId) {
@@ -72,22 +72,42 @@
 </script>
 
 <style>
+  button {
+    background-color: black;
+    padding: 1rem 2rem 1rem;
+    margin-top: 1rem;
+    color: white;
+  }
+  #center {
+    width: 50%;
+    margin: auto;
+  }
+
+  a{
+    color:white;
+    text-decoration: none;
+  }
 </style>
 
 <template>
-  <div class="title-container">
-    <label for="survey-title">Title</label>
-    <input bind:value={surveyTitle} type="text" id="survey-title" />
-  </div>
+  <div id="center">
+    <div class="title-container">
+      <label for="survey-title">Title</label>
+      <input bind:value={surveyTitle} type="text" id="survey-title" />
+    </div>
 
-  <!-- FOR EACH LOOP -->
-  {#if questions}
-    {#each questions as question}
-      <Question onEdit={(q) => handleEdit(q)} isAnswering={false} {question} />
-    {/each}
-  {:else}
-    <p>Create a new question!</p>
-  {/if}
-  <button on:click={addToQuestionList}>+</button>
-  <p>{surveyId}</p>
+    <!-- FOR EACH LOOP -->
+    {#if questions}
+      {#each questions as question}
+        <Question
+          onEdit={(q) => handleEdit(q)}
+          isAnswering={false}
+          {question} />
+      {/each}
+    {:else}
+      <p>Create a new question!</p>
+    {/if}
+    <button on:click={addToQuestionList}>+</button>
+    <a href={`localhost:5000/view/${surveyId}`}>Share this survey -{`&gt`} </a>
+  </div>
 </template>

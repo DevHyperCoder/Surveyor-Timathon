@@ -1,5 +1,4 @@
 <script lang="typescript">
-
   import { user } from "../../store";
   import { db } from "../../firebase";
 
@@ -15,16 +14,16 @@
   let questions: IQuestion[] = [];
   let surveyTitle: string;
   let surveyDocData: firebase.firestore.DocumentData;
- 
+
   let answers: Map<string, string | number> = new Map();
-  
+
   $: {
     answers;
     console.log(answers);
   }
- 
+
   getSurveyDocument();
-  
+
   async function getSurveyDocument() {
     const surveyDoc = await db.collection("surveys").doc(id).get();
     if (surveyDoc.exists) {
@@ -46,7 +45,7 @@
     if (answers.has(id)) {
       answers.delete(id);
     }
-    
+
     answers.set(id, text);
     answers = answers;
   }
@@ -61,7 +60,6 @@
     });
     return answersList;
   }
-
 
   function submitSurvey() {
     // Create a IResponse Obj
@@ -84,20 +82,39 @@
 </script>
 
 <style>
+  div {
+    width: 50%;
+    margin: auto;
+  }
+  a {
+    text-decoration: none;
+    color: white;
+    margin: 1rem;
+    padding: 0.5rem;
+    background-color: black;
+  }
 </style>
 
 <template>
-  {#await questions}
-    <p>loading</p>
-  {:then questions}
-    {#each questions as question}
-      <Question
-        onAnswer={(text) => handleAnswer(question.id, text)}
-        {question}
-        isAnswering={canAnswer(userObj, surveyDocData)} />
-    {/each}
-    {#if canAnswer(userObj, surveyDocData)}
-      <button on:click={submitSurvey} type="submit">Submit this quiz</button>
-    {:else}edit func would be done <a href={`/response/${id}`}>See responses</a>{/if}
-  {/await}
+  <div class="">
+    {#if surveyDocData}
+    <h2>{surveyDocData.surveyTitle}</h2>
+    {/if}
+    {#await questions}
+      <p>loading</p>
+    {:then questions}
+      {#each questions as question}
+        <Question
+          onAnswer={(text) => handleAnswer(question.id, text)}
+          {question}
+          isAnswering={canAnswer(userObj, surveyDocData)} />
+      {/each}
+      {#if canAnswer(userObj, surveyDocData)}
+        <button on:click={submitSurvey} type="submit">Submit this quiz</button>
+      {:else}
+        <p>edit func would be don</p>
+        <a href={`/response/${id}`}>See responses</a>
+      {/if}
+    {/await}
+  </div>
 </template>

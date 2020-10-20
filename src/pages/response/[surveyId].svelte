@@ -9,6 +9,8 @@
   import { db } from "../../firebase";
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import type { IQuestion } from "../../types/IQuestion";
+  import Question from "../_components/Question.svelte";
+  import App from "../../App.svelte";
 
   let responseDoc: Promise<
     firebase.firestore.DocumentData[]
@@ -18,7 +20,9 @@
     id;
     isLoad = getQnAPair(id);
   }
-
+  import { user } from "../../store";
+  let userObj: firebase.User;
+  user.subscribe((u) => (userObj = u));
   async function getQnAPair(id: string) {
     const questions = await getSurveyQuestions(surveyId);
     const reposone = await getResponse(id);
@@ -31,14 +35,23 @@
     });
     return responseView as [{ Q: IQuestion; A: IAnswer }];
   }
-
+  let error;
   async function getResponseDocument(surveyId: string) {
-    const docs = await db
-      .collection("responses")
-      .where("surveyId", "==", surveyId)
-      .get();
+    const surveyDoc = await db.collection("surveys").doc(surveyId).get();
+    if (!userObj) {
+      error = "You need to be logged in";
+      return;
+    }
+    if (surveyDoc.data().created_by == userObj.email) {
+      const docs = await db
+        .collection("responses")
+        .where("surveyId", "==", surveyId)
+        .get();
 
-    return docListTo(docs);
+      return docListTo(docs);
+    }
+    error = "You are not permitted to view the responses";
+    return;
   }
 
   function docListTo(
@@ -59,15 +72,17 @@
   {#if id}
     {#await isLoad then responseViewas}
       {#each responseViewas as a}
-        <p>{a.Q.text}</p>
-        <p>{a.A.answerText}</p>
+        <Question
+          isAnswering={false}
+          questionText={a.Q.text}
+          answer={a.A.answerText} />
       {/each}
     {/await}
   {:else}
     {#await responseDoc}
       <p>Loading respose</p>
     {:then docList}
-      {#if !docList}
+      {#if !docList && userObj}
         <p>Seems no responses</p>
       {:else}
         {#each docList as doc}
@@ -78,6 +93,11 @@
             }}>{doc.data.userId || 'UNKNOWN'}</button>
         {/each}
       {/if}
+    {:catch a}
+    <p>Sorry we ran into an error</p>
     {/await}
+  {/if}
+  {#if error}
+    <p>{error}</p>
   {/if}
 </template>
