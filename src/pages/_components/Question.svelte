@@ -3,7 +3,7 @@
 
   let text: string | number;
   export let answer: number | string;
-  export let questionText: string|number;
+  export let questionText: string | number;
   export let question: IQuestion;
   export let isAnswering: boolean = true;
   export let onEdit:
@@ -29,6 +29,16 @@
       onAnswer(text);
     }
   }
+
+  $: {
+    if (question) {
+      question.type;
+      if (question.type === "mcq" && question.option === undefined) {
+        question.option = [];
+      }
+    }
+  }
+
 </script>
 
 <style>
@@ -56,32 +66,46 @@
         <input bind:value={text} type="text" id={question.id} />
       {:else if question.type === 'num'}
         <input bind:value={text} type="number" id={question.id} />
-        <!-- {:else if question.type ==="mcq"}
-        <select name="" id={`mcq-${question.id}`}>
-          {#if  question.option === undefined ||question.option.length <=0 }
-            <p>Hmm... We seem to have a problem with this specific question..</p>
-            {:else}
-          {#each question.option as option}
-            <option value={option}>{option}</option>
-          {/each}
-          {/if}
-
-        </select> -->
+      {:else if question.type === 'mcq'}
+        {#if question.option === undefined || question.option.length <= 0}
+          <p>Hmm... We seem to have a problem with this specific question..</p>
+        {:else}
+          <form action="">
+            {#each question.option as option}
+              <input type="radio" value={option} bind:group={text} />
+              <label for={option}>{option}</label>
+            {/each}
+          </form>
+        {/if}
       {/if}
-    {:else}
-      <!-- Question text -->
-      {#if answer}
+    {:else if answer}
       <h2>{questionText}</h2>
       <p>{answer}</p>
-      {:else}
-        <!-- Choices -->
+    {:else}
+      Question text
+      <!-- Choices -->
       <h2 contenteditable bind:textContent={question.text} />
-        <select bind:value={question.type}>
-          <option value="mcq" default>MCQ</option>
-          <option value="sh-a">Short Answer</option>
-          <option value="p">Paragraph</option>
-          <option value="num">Number</option>
-        </select>
+      <select bind:value={question.type}>
+        <option value="mcq" default>MCQ</option>
+        <option value="sh-a">Short Answer</option>
+        <option value="p">Paragraph</option>
+        <option value="num">Number</option>
+      </select>
+
+      {#if question.type === 'mcq'}
+        {#if question.option}
+          {#each question.option as option}
+            <input type="radio" id={option} value={option} />
+            <label
+              contenteditable="true"
+              for={option}
+              bind:textContent={option}>{option}</label>
+          {/each}
+        {/if}
+        <button
+          on:click={() => {
+            question.option = [...question.option, 'asdf'];
+          }}>New option</button>
       {/if}
     {/if}
   </div>
