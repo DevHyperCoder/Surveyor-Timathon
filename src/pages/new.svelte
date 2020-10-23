@@ -23,14 +23,17 @@
     console.log(surveyTitle);
     updateTitle(surveyTitle);
   }
-
+let updateTitleCall;
   async function updateTitle(surveyTitle: string) {
     console.log(surveyId, surveyTitle);
     if (surveyId) {
+      updateTitleCall=false
       db.collection("surveys")
         .doc(surveyId)
         .set({ surveyTitle }, { merge: true });
+        return
     }
+    updateTitleCall = true
   }
   async function addToQuestionList() {
     // Create a new survey if it does not exist
@@ -39,15 +42,16 @@
         created_by: userObj.email,
       });
       surveyId = newSurvey.id;
+      if (updateTitleCall){
+        updateTitle(surveyTitle)
+
+      }
     }
-    console.log("click");
     let arrlen = questions.length.toString();
     questions = [...questions, { type: "p", text: "", id: arrlen }];
   }
 
   function handleEdit(question: IQuestion) {
-    console.log(question);
-
     const surveyCollectionRef = db.collection("surveys");
     try {
       surveyCollectionRef
@@ -68,6 +72,7 @@
         id: q.id,
       };
     }
+    return q
   }
 </script>
 
@@ -108,6 +113,6 @@
       <p>Create a new question!</p>
     {/if}
     <button on:click={addToQuestionList}>+</button>
-    <a href={`localhost:5000/view/${surveyId}`}>Share this survey -{`&gt`} </a>
+    <a target="_blank" href={`localhost:5000/view/${surveyId}`}>Share this survey -&gt </a>
   </div>
 </template>
