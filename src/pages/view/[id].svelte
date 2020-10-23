@@ -1,18 +1,16 @@
 <script lang="typescript">
   import { user } from "../../store";
-  import { db } from "../../firebase";
+  import { db,auth } from "../../firebase";
 
   import { params } from "@sveltech/routify";
   import type { IQuestion } from "../../types/IQuestion";
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import Question from "../_components/Question.svelte";
-
-  let userObj: firebase.User;
+  let userObj: firebase.User = auth.currentUser;
   user.subscribe((u) => (userObj = u));
 
   const { id } = $params;
   let questions: IQuestion[] = [];
-  let surveyTitle: string;
   let surveyDocData: firebase.firestore.DocumentData;
 
   let answers: Map<string, string | number> = new Map();
@@ -60,12 +58,27 @@
     });
     return answersList;
   }
+  let userId: string;
+
+  user.subscribe((u) => {
+    userObj = u;
+    if (userObj && !userObj.isAnonymous) userId = userObj.displayName;
+  });
+
+  let userName: string;
+  $: {
+    userName;
+    if (!userObj||userObj.isAnonymous) {
+      userId = userName;
+    }
+  }
+
 
   function submitSurvey() {
     // Create a IResponse Obj
     const response: IResponse = {
       surveyId: id,
-      userId: "",
+      userId,
       answers: getAnswers(),
     };
 
@@ -98,7 +111,7 @@
 <template>
   <div class="">
     {#if surveyDocData}
-    <h2>{surveyDocData.surveyTitle}</h2>
+      <h2>{surveyDocData.surveyTitle}</h2>
     {/if}
     {#await questions}
       <p>loading</p>
@@ -110,6 +123,12 @@
           isAnswering={canAnswer(userObj, surveyDocData)} />
       {/each}
       {#if canAnswer(userObj, surveyDocData)}
+        {#if !userObj ||userObj.isAnonymous}
+          <input
+            type="text"
+            placeholder="Enter your name"
+            bind:value={userName} />
+        {/if}
         <button on:click={submitSurvey} type="submit">Submit this quiz</button>
       {:else}
         <p>edit func would be don</p>
