@@ -51,6 +51,7 @@
       {#if userObj}
         <li>{userObj.displayName}</li>
         <li><button on:click={()=>{auth.signOut(); console.log("LOGPOUT")}}>Sign Out</button></li>
+        <li><a href="/new">New</a></li>
       {:else}<button on:click={login}>Sign in with google</button>{/if}
     </ul>
   </nav>

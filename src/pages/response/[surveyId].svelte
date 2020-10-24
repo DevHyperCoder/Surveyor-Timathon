@@ -26,6 +26,8 @@
   async function getQnAPair(id: string) {
     const questions = await getSurveyQuestions(surveyId);
     const reposone = await getResponse(id);
+    console.log(questions),reposone;
+    
     const responseView = [];
     questions.forEach((q, i) => {
       responseView.push({

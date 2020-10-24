@@ -48,7 +48,7 @@ let updateTitleCall;
       }
     }
     let arrlen = questions.length.toString();
-    questions = [...questions, { type: "p", text: "", id: arrlen }];
+    questions = [...questions, { type: "p", text: "", id: arrlen,isRequired: true }];
   }
 
   function handleEdit(question: IQuestion) {
@@ -64,12 +64,14 @@ let updateTitleCall;
     }
   }
 
-  function formatQuestionObj(q: IQuestion) {
+  function formatQuestionObj(q: IQuestion)
+  :IQuestion {
     if (q.option === undefined) {
       return {
         type: q.type,
         text: q.text,
         id: q.id,
+        isRequired: q.isRequired
       };
     }
     return q

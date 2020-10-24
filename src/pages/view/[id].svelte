@@ -51,6 +51,7 @@
   function getAnswers() {
     const answersList: IAnswer[] = [];
     answers.forEach((a, key) => {
+      if(!a){a=""}
       answersList.push({
         questionId: key,
         answerText: a,
@@ -127,6 +128,7 @@
         {#if !userObj ||userObj.isAnonymous}
           <input
             type="text"
+            required={true}
             placeholder="Enter your name"
             bind:value={userName} />
         {/if}

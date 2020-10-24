@@ -11,6 +11,9 @@
     | ((question: IQuestion, isAnswering: boolean) => any);
   export let onAnswer: undefined | ((text: string | number) => any);
 
+console.log(questionText,answer);
+
+
   let timer: number;
   $: {
     question;
@@ -38,7 +41,6 @@
       }
     }
   }
-
 </script>
 
 <style>
@@ -61,30 +63,38 @@
 
       <!-- Render input fields based on types -->
       {#if question.type === 'sh-a'}
-        <input bind:value={text} type="text" maxlength={100} id={question.id} />
+        <input required={question.isRequired} bind:value={text} type="text" maxlength={100} id={question.id} />
       {:else if question.type === 'p'}
-        <input bind:value={text} type="text" id={question.id} />
+        <input required={question.isRequired} bind:value={text} type="text" id={question.id} />
       {:else if question.type === 'num'}
-        <input bind:value={text} type="number" id={question.id} />
+        <input required={question.isRequired} bind:value={text} type="number" id={question.id} />
       {:else if question.type === 'mcq'}
         {#if question.option === undefined || question.option.length <= 0}
           <p>Hmm... We seem to have a problem with this specific question..</p>
         {:else}
           <form action="">
             {#each question.option as option}
-              <input type="radio" value={option} bind:group={text} />
+              <input required={question.isRequired} type="radio" value={option} bind:group={text} />
               <label for={option}>{option}</label>
             {/each}
           </form>
         {/if}
       {/if}
-    {:else if answer}
+    {:else if answer || questionText}
       <h2>{questionText}</h2>
       <p>{answer}</p>
     {:else}
       Question text
       <!-- Choices -->
       <h2 contenteditable bind:textContent={question.text} />
+
+      <!-- is required -->
+      <label for="is-required-check">Is this question required?</label>
+      <input
+        id="is-required-check"
+        type="checkbox"
+        bind:checked={question.isRequired} />
+
       <select bind:value={question.type}>
         <option value="mcq" default>MCQ</option>
         <option value="sh-a">Short Answer</option>
