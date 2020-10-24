@@ -43,3 +43,15 @@ export function docListToSurveyList(
     });
     return surveys;
 }
+export  function formatQuestionObj(q: IQuestion)
+  :IQuestion {
+    if (q.option === undefined) {
+      return {
+        type: q.type,
+        text: q.text,
+        id: q.id,
+        isRequired: q.isRequired
+      };
+    }
+    return q
+  }

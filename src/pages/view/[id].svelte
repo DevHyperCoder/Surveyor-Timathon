@@ -6,6 +6,7 @@
   import type { IQuestion } from "../../types/IQuestion";
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import Question from "../_components/Question.svelte";
+import { formatQuestionObj } from "../../DB/Survey";
   let userObj: firebase.User = auth.currentUser;
   user.subscribe((u) => (userObj = u));
 
@@ -94,6 +95,25 @@
 
     return userObj.email !== surveyDocData.created_by;
   }
+
+  function handleEdit(question: IQuestion) {
+    const surveyCollectionRef = db.collection("surveys");
+    try {
+      surveyCollectionRef
+        .doc(id)
+        .collection("questions")
+        .doc(question.id)
+        .set(formatQuestionObj(question), { merge: true });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+
+
+
+
 </script>
 
 <style>
@@ -121,6 +141,7 @@
       {#each questions as question}
         <Question
           onAnswer={(text) => handleAnswer(question.id, text)}
+          onEdit={(q)=> handleEdit(q)}
           {question}
           isAnswering={canAnswer(userObj, surveyDocData)} />
       {/each}
