@@ -2,7 +2,7 @@
   import { user } from "../../store";
   import { db,auth } from "../../firebase";
 
-  import { params } from "@sveltech/routify";
+  import { params, redirect } from "@sveltech/routify";
   import type { IQuestion } from "../../types/IQuestion";
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import Question from "../_components/Question.svelte";
@@ -83,6 +83,7 @@
     };
 
     db.collection("responses").add(response);
+    $redirect("/success")
   }
 
   function canAnswer(userObj, surveyDocData) {
