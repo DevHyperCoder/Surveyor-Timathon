@@ -113,6 +113,6 @@ let updateTitleCall;
       <p>Create a new question!</p>
     {/if}
     <button on:click={addToQuestionList}>+</button>
-    <a target="_blank" href={`localhost:5000/view/${surveyId}`}>Share this survey -&gt </a>
+    <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others </a>
   </div>
 </template>
