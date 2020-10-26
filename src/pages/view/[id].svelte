@@ -133,26 +133,28 @@
     {#await questions}
       <p>loading</p>
     {:then questions}
-      {#each questions as question}
-        <Question
-          onAnswer={(text) => handleAnswer(question.id, text)}
-          onEdit={(q) => handleEdit(q)}
-          {question}
-          isAnswering={canAnswer(userObj, surveyDocData)} />
-      {/each}
-      {#if canAnswer(userObj, surveyDocData)}
-        {#if !userObj || userObj.isAnonymous}
-          <input
-            type="text"
-            required={true}
-            placeholder="Enter your name"
-            bind:value={userName} />
+      <form>
+        {#each questions as question}
+          <Question
+            onAnswer={(text) => handleAnswer(question.id, text)}
+            onEdit={(q) => handleEdit(q)}
+            {question}
+            isAnswering={canAnswer(userObj, surveyDocData)} />
+        {/each}
+        {#if canAnswer(userObj, surveyDocData)}
+          {#if !userObj || userObj.isAnonymous}
+            <input
+              type="text"
+              required={true}
+              placeholder="Enter your name"
+              bind:value={userName} />
+          {/if}
+          <button on:click={submitSurvey} type="submit">Submit this quiz</button>
+        {:else}
+          <p>edit func would be don</p>
+          <a href={`/response/${id}`}>See responses</a>
         {/if}
-        <button on:click={submitSurvey} type="submit">Submit this quiz</button>
-      {:else}
-        <p>edit func would be don</p>
-        <a href={`/response/${id}`}>See responses</a>
-      {/if}
+      </form>
     {/await}
   </div>
 </template>
