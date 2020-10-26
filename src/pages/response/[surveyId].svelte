@@ -10,7 +10,6 @@
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import type { IQuestion } from "../../types/IQuestion";
   import Question from "../_components/Question.svelte";
-  import App from "../../App.svelte";
 
   let responseDoc: Promise<
     firebase.firestore.DocumentData[]
@@ -20,9 +19,12 @@
     id;
     isLoad = getQnAPair(id);
   }
+  
   import { user } from "../../store";
+  
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
+  
   async function getQnAPair(id: string) {
     const questions = await getSurveyQuestions(surveyId);
     const reposone = await getResponse(id);
@@ -35,9 +37,10 @@
         A: reposone.answers[i],
       });
     });
+
     return responseView as [{ Q: IQuestion; A: IAnswer }];
   }
-  let error;
+  let error: string;
   async function getResponseDocument(surveyId: string) {
     const surveyDoc = await db.collection("surveys").doc(surveyId).get();
     if (!userObj) {
@@ -74,10 +77,14 @@
   {#if id}
     {#await isLoad then responseViewas}
       {#each responseViewas as a}
-        <Question
-          isAnswering={false}
-          questionText={a.Q.text}
-          answer={a.A.answerText} />
+        {#if !a.A}
+          <p>No Answer for this question :(</p>
+        {:else}
+          <Question
+            isAnswering={false}
+            questionText={a.Q.text}
+            answer={a.A.answerText} />
+        {/if}
       {/each}
     {/await}
   {:else}

@@ -110,14 +110,27 @@
     }
   }
 
-  function addToQuestionList(){
+  function addToQuestionList() {
     console.log("addToQuestionList");
-     let arrlen = questions.length.toString();
+    let arrlen = questions.length.toString();
     questions = [
       ...questions,
       { type: "p", text: "", id: arrlen, isRequired: true },
     ];
-  }  
+  }
+  async function updateTitle(surveyTitle: string) {
+    console.log(id, surveyTitle);
+    if (id) {
+      db.collection("surveys").doc(id).set({ surveyTitle }, { merge: true });
+      return;
+    }
+  }
+  $: {
+    surveyDocData;
+    if (surveyDocData) {
+      updateTitle(surveyDocData.surveyTitle);
+    }
+  }
 </script>
 
 <style>
@@ -137,7 +150,13 @@
 <template>
   <div class="">
     {#if surveyDocData}
-      <h2>{surveyDocData.surveyTitle}</h2>
+      {#if !canAnswer(userObj, surveyDocData)}
+        <h2
+          contenteditable="true"
+          bind:textContent={surveyDocData.surveyTitle} />
+      {:else}
+        <h2>{surveyDocData.surveyTitle}</h2>
+      {/if}
     {/if}
     {#await questions}
       <p>loading</p>
