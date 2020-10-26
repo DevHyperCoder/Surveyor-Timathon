@@ -23,17 +23,17 @@
     console.log(surveyTitle);
     updateTitle(surveyTitle);
   }
-let updateTitleCall;
+  let updateTitleCall;
   async function updateTitle(surveyTitle: string) {
     console.log(surveyId, surveyTitle);
     if (surveyId) {
-      updateTitleCall=false
+      updateTitleCall = false;
       db.collection("surveys")
         .doc(surveyId)
         .set({ surveyTitle }, { merge: true });
-        return
+      return;
     }
-    updateTitleCall = true
+    updateTitleCall = true;
   }
   async function addToQuestionList() {
     // Create a new survey if it does not exist
@@ -42,13 +42,15 @@ let updateTitleCall;
         created_by: userObj.email,
       });
       surveyId = newSurvey.id;
-      if (updateTitleCall){
-        updateTitle(surveyTitle)
-
+      if (updateTitleCall) {
+        updateTitle(surveyTitle);
       }
     }
     let arrlen = questions.length.toString();
-    questions = [...questions, { type: "p", text: "", id: arrlen,isRequired: true }];
+    questions = [
+      ...questions,
+      { type: "p", text: "", id: arrlen, isRequired: true },
+    ];
   }
 
   function handleEdit(question: IQuestion) {
@@ -64,17 +66,16 @@ let updateTitleCall;
     }
   }
 
-  function formatQuestionObj(q: IQuestion)
-  :IQuestion {
+  function formatQuestionObj(q: IQuestion): IQuestion {
     if (q.option === undefined) {
       return {
         type: q.type,
         text: q.text,
         id: q.id,
-        isRequired: q.isRequired
+        isRequired: q.isRequired,
       };
     }
-    return q
+    return q;
   }
 </script>
 
@@ -90,8 +91,8 @@ let updateTitleCall;
     margin: auto;
   }
 
-  a{
-    color:white;
+  a {
+    color: white;
     text-decoration: none;
   }
 </style>
@@ -115,6 +116,7 @@ let updateTitleCall;
       <p>Create a new question!</p>
     {/if}
     <button on:click={addToQuestionList}>+</button>
-    <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others </a>
+    <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others
+    </a>
   </div>
 </template>

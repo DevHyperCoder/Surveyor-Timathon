@@ -1,11 +1,11 @@
 <script lang="ts">
   // CTA Button
   import CTAButton from "./_components/CTAButton/index.svelte";
-  
+
   import { redirect } from "@sveltech/routify";
 
-  function redirectToHomePage(){
-    $redirect('/');
+  function redirectToHomePage() {
+    $redirect("/");
   }
 
   // Svelte Store => User import
@@ -34,7 +34,7 @@
     color: black;
     display: flex;
     align-items: center;
-flex-wrap: wrap;
+    flex-wrap: wrap;
     padding: 4rem 2rem;
     text-align: center;
   }
@@ -51,9 +51,9 @@ flex-wrap: wrap;
   .img-container h1::first-letter {
     color: aliceblue;
   }
-  .img-container img{
-    margin-top: 1.5rem;}
-
+  .img-container img {
+    margin-top: 1.5rem;
+  }
 
   .img-container {
     background-color: var(--primary-purple);
@@ -63,7 +63,9 @@ flex-wrap: wrap;
     article {
       width: 100%;
     }
-    section{width:100%;}
+    section {
+      width: 100%;
+    }
   }
 </style>
 
@@ -77,11 +79,17 @@ flex-wrap: wrap;
       <article>
         {#if userObj}
           <h2>Welcome {userObj.displayName}!</h2>
-          <CTAButton onClick={redirectToHomePage} Class="cta" value="See your surveys ->"/>
+          <CTAButton
+            onClick={redirectToHomePage}
+            Class="cta"
+            value="See your surveys ->" />
         {:else}
           <h1>Login</h1>
-          <CTAButton Class="google cta" onClick={login} value="Sign in with Google"/>
-          {/if}
+          <CTAButton
+            Class="google cta"
+            onClick={login}
+            value="Sign in with Google" />
+        {/if}
       </article>
     </section>
   </div>

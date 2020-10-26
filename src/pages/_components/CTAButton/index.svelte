@@ -21,8 +21,8 @@
     margin: auto;
     margin-top: 5rem;
   }
-  .google{
-    background-color: #4285F4;
+  .google {
+    background-color: #4285f4;
   }
 </style>
 

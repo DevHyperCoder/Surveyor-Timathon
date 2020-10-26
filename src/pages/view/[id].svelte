@@ -1,12 +1,12 @@
 <script lang="typescript">
   import { user } from "../../store";
-  import { db,auth } from "../../firebase";
+  import { db, auth } from "../../firebase";
 
   import { params, redirect } from "@sveltech/routify";
   import type { IQuestion } from "../../types/IQuestion";
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import Question from "../_components/Question.svelte";
-import { formatQuestionObj } from "../../DB/Survey";
+  import { formatQuestionObj } from "../../DB/Survey";
   let userObj: firebase.User = auth.currentUser;
   user.subscribe((u) => (userObj = u));
 
@@ -52,7 +52,9 @@ import { formatQuestionObj } from "../../DB/Survey";
   function getAnswers() {
     const answersList: IAnswer[] = [];
     answers.forEach((a, key) => {
-      if(!a){a=""}
+      if (!a) {
+        a = "";
+      }
       answersList.push({
         questionId: key,
         answerText: a,
@@ -70,11 +72,10 @@ import { formatQuestionObj } from "../../DB/Survey";
   let userName: string;
   $: {
     userName;
-    if (!userObj||userObj.isAnonymous) {
+    if (!userObj || userObj.isAnonymous) {
       userId = userName;
     }
   }
-
 
   function submitSurvey() {
     // Create a IResponse Obj
@@ -85,7 +86,7 @@ import { formatQuestionObj } from "../../DB/Survey";
     };
 
     db.collection("responses").add(response);
-    $redirect("/success")
+    $redirect("/success");
   }
 
   function canAnswer(userObj, surveyDocData) {
@@ -108,12 +109,6 @@ import { formatQuestionObj } from "../../DB/Survey";
       console.error(error);
     }
   }
-
-
-
-
-
-
 </script>
 
 <style>
@@ -141,12 +136,12 @@ import { formatQuestionObj } from "../../DB/Survey";
       {#each questions as question}
         <Question
           onAnswer={(text) => handleAnswer(question.id, text)}
-          onEdit={(q)=> handleEdit(q)}
+          onEdit={(q) => handleEdit(q)}
           {question}
           isAnswering={canAnswer(userObj, surveyDocData)} />
       {/each}
       {#if canAnswer(userObj, surveyDocData)}
-        {#if !userObj ||userObj.isAnonymous}
+        {#if !userObj || userObj.isAnonymous}
           <input
             type="text"
             required={true}

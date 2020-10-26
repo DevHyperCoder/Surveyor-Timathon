@@ -26,8 +26,8 @@
   async function getQnAPair(id: string) {
     const questions = await getSurveyQuestions(surveyId);
     const reposone = await getResponse(id);
-    console.log(questions),reposone;
-    
+    console.log(questions), reposone;
+
     const responseView = [];
     questions.forEach((q, i) => {
       responseView.push({
@@ -96,7 +96,7 @@
         {/each}
       {/if}
     {:catch a}
-    <p>Sorry we ran into an error</p>
+      <p>Sorry we ran into an error</p>
     {/await}
   {/if}
   {#if error}

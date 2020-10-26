@@ -1,14 +1,14 @@
 <script>
   import CTAButton from "../CTAButton/index.svelte";
 
-  import {redirect} from '@sveltech/routify';
+  import { redirect } from "@sveltech/routify";
 
   import { metatags } from "@sveltech/routify";
   metatags.title = "Surveyor";
   metatags.description = "Quick and easy surveys";
 
-  function redirectToLogin(){
-    $redirect('/login')
+  function redirectToLogin() {
+    $redirect("/login");
   }
 </script>
 

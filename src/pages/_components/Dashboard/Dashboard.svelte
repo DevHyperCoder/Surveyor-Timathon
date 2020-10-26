@@ -1,14 +1,11 @@
 <script lang="ts">
   import { user } from "../../../store";
-  
+
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
-  
-  import {
-    getSurveysByEmail,
-    docListToSurveyList,
-  } from "../../../DB/Survey";
-  
+
+  import { getSurveysByEmail, docListToSurveyList } from "../../../DB/Survey";
+
   let surveysOfCurrentUser = getAllSurveysOfCurrentUser();
 
   async function getAllSurveysOfCurrentUser() {
@@ -42,7 +39,7 @@
       <p>{survey.surveyTitle}</p>
       <a href={`/view/${survey.surveyId}`}>go to survey</a>
     {/each}
-    <button on:click={() => (surveysOfCurrentUser = showAllSurveys())}>Show all surveys that you
-      have</button>
+    <button on:click={() => (surveysOfCurrentUser = showAllSurveys())}>Show all
+      surveys that you have</button>
   {/await}
 </template>
