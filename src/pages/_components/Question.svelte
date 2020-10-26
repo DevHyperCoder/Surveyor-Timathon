@@ -129,6 +129,7 @@
           {/each}
         {/if}
         <button
+        type="button"
           on:click={() => {
             question.option = [...question.option, 'asdf'];
           }}>New option</button>

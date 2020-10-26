@@ -109,6 +109,15 @@
       console.error(error);
     }
   }
+
+  function addToQuestionList(){
+    console.log("addToQuestionList");
+     let arrlen = questions.length.toString();
+    questions = [
+      ...questions,
+      { type: "p", text: "", id: arrlen, isRequired: true },
+    ];
+  }  
 </script>
 
 <style>
@@ -151,6 +160,7 @@
           {/if}
           <button on:click={submitSurvey} type="submit">Submit this quiz</button>
         {:else}
+          <button on:click={addToQuestionList} type="button">New question</button>
           <p>edit func would be don</p>
           <a href={`/response/${id}`}>See responses</a>
         {/if}
