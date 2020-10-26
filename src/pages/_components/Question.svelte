@@ -11,8 +11,6 @@
     | ((question: IQuestion, isAnswering: boolean) => any);
   export let onAnswer: undefined | ((text: string | number) => any);
 
-  console.log(questionText, answer);
-
   let timer: number;
   $: {
     question;
@@ -25,6 +23,7 @@
       onEdit(question, isAnswering);
     }, 750);
   }
+
   $: {
     text;
     if (isAnswering) {
@@ -37,6 +36,45 @@
       question.type;
       if (question.type === "mcq" && question.option === undefined) {
         question.option = [];
+      }
+    }
+  }
+
+  let mcqTemplate: "likely" | "rating-num" | "rating-satisfaction" | "" = "";
+
+  $: {
+    mcqTemplate;
+    if (!isAnswering) {
+      switch (mcqTemplate) {
+        case "rating-num":
+          if (question.text === "") {
+            question.text = "On a scale of 1 to 5 how would you rate?";
+          }
+          question.option = [...question.option, "1", "2", "3", "4", "5"];
+          break;
+        case "rating-satisfaction":
+          if (question.text === "") {
+            question.text = "How much are you satisfied?";
+          }
+          question.option = [
+            ...question.option,
+            "Not at all satisfied",
+            "Somewhat satisfied",
+            "Nuetral",
+            "Highly satisfied",
+          ];
+          break;
+        case "likely":
+          if (question.text === "") {
+            question.text = "How likely are you ";
+          }
+          question.option = [
+            ...question.option,
+            "Not at all likely",
+            "Somewhat likely",
+            "Highly likely",
+          ];
+          break;
       }
     }
   }
@@ -128,6 +166,16 @@
               bind:textContent={option}>{option}</label>
           {/each}
         {/if}
+
+        {#if question.option.length === 0}
+          <select bind:value={mcqTemplate}>
+            <option value="rating-num">Rating with number</option>
+            <option value="rating-satisfied">Rating with satisfaction</option>
+            <option value="likely">likely</option>
+            <option value="" selected={true}>none</option>
+          </select>
+        {/if}
+
         <button
           type="button"
           on:click={() => {
