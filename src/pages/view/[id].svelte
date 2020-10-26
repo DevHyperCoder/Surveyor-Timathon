@@ -7,6 +7,7 @@
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import Question from "../_components/Question.svelte";
   import { formatQuestionObj } from "../../DB/Survey";
+  import { async } from "rxjs";
   let userObj: firebase.User = auth.currentUser;
   user.subscribe((u) => (userObj = u));
 
@@ -27,6 +28,8 @@
     const surveyDoc = await db.collection("surveys").doc(id).get();
     if (surveyDoc.exists) {
       surveyDocData = surveyDoc.data();
+      oldTitle=surveyDocData.surveyTitle
+      oldDescription=surveyDocData.description
       const surveyQuestions = await db
         .collection(`surveys/${id}/questions`)
         .get();
@@ -125,10 +128,25 @@
       return;
     }
   }
+
+  async function updateDescription(description: string) {
+    if (id) {
+      db.collection("surveys").doc(id).set({ description }, { merge: true });
+      return;
+    }
+  }
+
+  let oldTitle, oldDescription;
+
   $: {
     surveyDocData;
     if (surveyDocData) {
-      updateTitle(surveyDocData.surveyTitle);
+      if (surveyDocData.surveyTitle != oldTitle) {
+        updateTitle(surveyDocData.surveyTitle);
+      }
+      if (surveyDocData.desc != oldDescription) {
+        updateDescription(surveyDocData.description);
+      }
     }
   }
 </script>
@@ -154,8 +172,10 @@
         <h2
           contenteditable="true"
           bind:textContent={surveyDocData.surveyTitle} />
+        <p contenteditable="true" bind:textContent={surveyDocData.description} />
       {:else}
         <h2>{surveyDocData.surveyTitle}</h2>
+        <p>{surveyDocData.description}</p>
       {/if}
     {/if}
     {#await questions}
