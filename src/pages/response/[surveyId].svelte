@@ -19,12 +19,12 @@
     id;
     isLoad = getQnAPair(id);
   }
-  
+
   import { user } from "../../store";
-  
+
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
-  
+
   async function getQnAPair(id: string) {
     const questions = await getSurveyQuestions(surveyId);
     const reposone = await getResponse(id);
@@ -48,12 +48,15 @@
       return;
     }
     if (surveyDoc.data().created_by == userObj.email) {
-      const docs = await db
-        .collection("responses")
-        .where("surveyId", "==", surveyId)
-        .get();
-
-      return docListTo(docs);
+      try {
+        const docs = await db
+          .collection("responses")
+          .where("surveyId", "==", surveyId)
+          .get();
+        return docListTo(docs);
+      } catch (e) {
+        console.error(e);
+      }
     }
     error = "You are not permitted to view the responses";
     return;
