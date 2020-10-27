@@ -77,6 +77,30 @@
     }
     return q;
   }
+
+  async function onDelete(qID: string) {
+    const ID = +qID;
+    if (ID < 0 || ID > questions.length) {
+      return;
+    }
+
+    let question = questions[ID];
+    questions.splice(ID, 1);
+
+    // delete from firebase
+    const surveyCollectionRef = db.collection("surveys");
+    try {
+      await surveyCollectionRef
+        .doc(surveyId)
+        .collection("questions")
+        .doc(question.id)
+        .delete();
+    } catch (error) {
+      console.error(error);
+    }
+
+    questions = questions;
+  }
 </script>
 
 <style>
@@ -110,6 +134,7 @@
         <Question
           onEdit={(q) => handleEdit(q)}
           isAnswering={false}
+            onDelete={(id) => onDelete(id)}
           {question} />
       {/each}
     {:else}

@@ -28,8 +28,8 @@
     const surveyDoc = await db.collection("surveys").doc(id).get();
     if (surveyDoc.exists) {
       surveyDocData = surveyDoc.data();
-      oldTitle=surveyDocData.surveyTitle
-      oldDescription=surveyDocData.description
+      oldTitle = surveyDocData.surveyTitle;
+      oldDescription = surveyDocData.description;
       const surveyQuestions = await db
         .collection(`surveys/${id}/questions`)
         .get();
@@ -136,7 +136,7 @@
     }
   }
 
-  let oldTitle, oldDescription;
+  let oldTitle: string, oldDescription: string;
 
   $: {
     surveyDocData;
@@ -148,6 +148,30 @@
         updateDescription(surveyDocData.description);
       }
     }
+  }
+
+  async function onDelete(qID: string) {
+    const ID = +qID;
+    if (ID < 0 || ID > questions.length) {
+      return;
+    }
+
+    let question = questions[ID];
+    questions.splice(ID, 1);
+
+    // delete from firebase
+    const surveyCollectionRef = db.collection("surveys");
+    try {
+      await surveyCollectionRef
+        .doc(id)
+        .collection("questions")
+        .doc(question.id)
+        .delete();
+    } catch (error) {
+      console.error(error);
+    }
+
+    questions = questions;
   }
 </script>
 
@@ -172,7 +196,9 @@
         <h2
           contenteditable="true"
           bind:textContent={surveyDocData.surveyTitle} />
-        <p contenteditable="true" bind:textContent={surveyDocData.description} />
+        <p
+          contenteditable="true"
+          bind:textContent={surveyDocData.description} />
       {:else}
         <h2>{surveyDocData.surveyTitle}</h2>
         <p>{surveyDocData.description}</p>
@@ -186,6 +212,7 @@
           <Question
             onAnswer={(text) => handleAnswer(question.id, text)}
             onEdit={(q) => handleEdit(q)}
+            onDelete={(id) => onDelete(id)}
             {question}
             isAnswering={canAnswer(userObj, surveyDocData)} />
         {/each}
@@ -200,7 +227,6 @@
           <button on:click={submitSurvey} type="submit">Submit this quiz</button>
         {:else}
           <button on:click={addToQuestionList} type="button">New question</button>
-          <p>edit func would be don</p>
           <a href={`/response/${id}`}>See responses</a>
         {/if}
       </form>

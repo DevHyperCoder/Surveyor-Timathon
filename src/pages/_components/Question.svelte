@@ -10,6 +10,8 @@
     | undefined
     | ((question: IQuestion, isAnswering: boolean) => any);
   export let onAnswer: undefined | ((text: string | number) => any);
+  export let onDelete: undefined | ((id: string) => any);
+console.log(isAnswering);
 
   let timer: number;
   $: {
@@ -182,6 +184,9 @@
             question.option = [...question.option, 'asdf'];
           }}>New option</button>
       {/if}
+
+      <button type="button" on:click={() => onDelete(question.id)}>Delete this
+        question</button>
     {/if}
   </div>
 </template>
