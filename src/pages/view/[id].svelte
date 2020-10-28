@@ -173,6 +173,28 @@
 
     questions = questions;
   }
+
+  import { firestore } from "firebase/app";
+
+  async function makeToTemplate() {
+    console.log(id);
+    const shouldAddToTemplate = confirm("Sure? adding it to ur templates list");
+    if (!shouldAddToTemplate) {
+      return;
+    }
+let title = surveyDocData.surveyTitle
+
+console.log(id,title);
+
+
+    // Firebase call
+    await db
+      .collection("templates")
+      .doc(userObj.uid)
+      .set({
+        surveys: firestore.FieldValue.arrayUnion({id,title}),
+      },{merge:true});
+  }
 </script>
 
 <style>
@@ -228,6 +250,10 @@
         {:else}
           <button on:click={addToQuestionList} type="button">New question</button>
           <a href={`/response/${id}`}>See responses</a>
+          {#if userObj}
+            <button on:click={() => makeToTemplate()} type="button">Make to
+              templates</button>
+          {/if}
         {/if}
       </form>
     {/await}
