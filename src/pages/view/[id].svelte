@@ -175,6 +175,7 @@
   }
 
   import { firestore } from "firebase/app";
+  import type { ISurveyList } from "../../types/ISurvey";
 
   async function makeToTemplate() {
     console.log(id);
@@ -182,26 +183,31 @@
     if (!shouldAddToTemplate) {
       return;
     }
-let title = surveyDocData.surveyTitle
+    let title = surveyDocData.surveyTitle;
 
-console.log(id,title);
+    console.log(id, title);
 
+    const s: ISurveyList = {
+      surveyTitle: title,
+      surveyId: id,
+    };
 
     // Firebase call
     await db
       .collection("templates")
       .doc(userObj.uid)
-      .set({
-        surveys: firestore.FieldValue.arrayUnion({id,title}),
-      },{merge:true});
+      .set(
+        {
+          surveys: firestore.FieldValue.arrayUnion(s),
+        },
+        { merge: true }
+      );
   }
 </script>
 
 <style>
-  div {
-    width: 50%;
-    margin: auto;
-  }
+  
+
   a {
     text-decoration: none;
     color: white;
@@ -209,23 +215,39 @@ console.log(id,title);
     padding: 0.5rem;
     background-color: black;
   }
+  article {
+    background-color: var(--white);
+    border-radius: 30px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  article h2 {
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+  article p {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
 </style>
 
 <template>
-  <div class="">
-    {#if surveyDocData}
-      {#if !canAnswer(userObj, surveyDocData)}
-        <h2
-          contenteditable="true"
-          bind:textContent={surveyDocData.surveyTitle} />
-        <p
-          contenteditable="true"
-          bind:textContent={surveyDocData.description} />
-      {:else}
-        <h2>{surveyDocData.surveyTitle}</h2>
-        <p>{surveyDocData.description}</p>
+    <article>
+      {#if surveyDocData}
+        {#if !canAnswer(userObj, surveyDocData)}
+          <h2
+            contenteditable="true"
+            bind:textContent={surveyDocData.surveyTitle} />
+          <p
+            contenteditable="true"
+            bind:textContent={surveyDocData.description} />
+        {:else}
+          <h2>{surveyDocData.surveyTitle}</h2>
+          <p>{surveyDocData.description}</p>
+        {/if}
       {/if}
-    {/if}
+    </article>
     {#await questions}
       <p>loading</p>
     {:then questions}
@@ -248,14 +270,35 @@ console.log(id,title);
           {/if}
           <button on:click={submitSurvey} type="submit">Submit this quiz</button>
         {:else}
-          <button on:click={addToQuestionList} type="button">New question</button>
+          <svg
+            on:click={addToQuestionList}
+            width="1em"
+            height="1em"
+            viewBox="0 0 16 16"
+            class="bi bi-plus-circle-fill"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill-rule="evenodd"
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+          </svg>
+
           <a href={`/response/${id}`}>See responses</a>
           {#if userObj}
-            <button on:click={() => makeToTemplate()} type="button">Make to
-              templates</button>
+            <svg
+              width="1em"
+              on:click={() => makeToTemplate()}
+              height="1em"
+              viewBox="0 0 16 16"
+              class="bi bi-file-earmark-fill"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                fill-rule="evenodd"
+                d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0H4zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z" />
+            </svg>
           {/if}
         {/if}
       </form>
     {/await}
-  </div>
 </template>

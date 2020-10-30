@@ -1,5 +1,6 @@
 import { db } from '../firebase'
 import type { IQuestion } from '../types/IQuestion'
+import type { ISurveyList } from '../types/ISurvey'
 
 export async function getSurveyQuestions(surveyID: string) {
     const questionsCol = await db.collection(`surveys/${surveyID}/questions`).get()
@@ -30,7 +31,7 @@ return docs
 export function docListToSurveyList(
     docs: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
 ) {
-    let surveys: any[] = [];
+    let surveys: ISurveyList[] = [];
     docs.forEach((d) => {
         if (d.exists) {
             const surveyId = d.id;

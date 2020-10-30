@@ -11,7 +11,11 @@
     | ((question: IQuestion, isAnswering: boolean) => any);
   export let onAnswer: undefined | ((text: string | number) => any);
   export let onDelete: undefined | ((id: string) => any);
-console.log(isAnswering);
+  console.log(isAnswering);
+
+  if (question && !question.text) {
+    question.text = "Enter your question here";
+  }
 
   let timer: number;
   $: {
@@ -46,7 +50,7 @@ console.log(isAnswering);
 
   $: {
     mcqTemplate;
-    if (!isAnswering) {
+    if (!isAnswering && question.option === []) {
       switch (mcqTemplate) {
         case "rating-num":
           if (question.text === "") {
@@ -84,12 +88,18 @@ console.log(isAnswering);
 
 <style>
   .question {
-    width: 90%;
-    background-color: aliceblue;
-    color: black;
-    margin: 1rem;
-    border-radius: 10px 10px 10px 10px;
+    width: 100%;
+    background-color: var(--white);
+    color: var(--black);
+    margin: 1rem 0;
+    border-radius: 30px;
     padding: 0.8rem;
+  }
+  h2 {
+    margin-bottom: 0.8rem;
+  }
+  .question * {
+    margin-bottom: 0.2rem;
   }
 </style>
 
@@ -126,12 +136,14 @@ console.log(isAnswering);
         {:else}
           <form action="">
             {#each question.option as option}
-              <input
-                required={question.isRequired}
-                type="radio"
-                value={option}
-                bind:group={text} />
-              <label for={option}>{option}</label>
+              <div>
+                <input
+                  required={question.isRequired}
+                  type="radio"
+                  value={option}
+                  bind:group={text} />
+                <label for={option}>{option}</label>
+              </div>
             {/each}
           </form>
         {/if}
@@ -140,17 +152,8 @@ console.log(isAnswering);
       <h2>{questionText}</h2>
       <p>{answer}</p>
     {:else}
-      Question text
       <!-- Choices -->
       <h2 contenteditable bind:textContent={question.text} />
-
-      <!-- is required -->
-      <label for="is-required-check">Is this question required?</label>
-      <input
-        id="is-required-check"
-        type="checkbox"
-        bind:checked={question.isRequired} />
-
       <select bind:value={question.type}>
         <option value="mcq" default>MCQ</option>
         <option value="sh-a">Short Answer</option>
@@ -158,15 +161,28 @@ console.log(isAnswering);
         <option value="num">Number</option>
       </select>
 
+      <!-- is required -->
+      <div id="required">
+        <label for="is-required-check">Is this question required?</label>
+        <input
+          id="is-required-check"
+          type="checkbox"
+          bind:checked={question.isRequired} />
+      </div>
+
       {#if question.type === 'mcq'}
         {#if question.option}
-          {#each question.option as option}
-            <input type="radio" id={option} value={option} />
-            <label
-              contenteditable="true"
-              for={option}
-              bind:textContent={option}>{option}</label>
-          {/each}
+          <form>
+            {#each question.option as option}
+              <div>
+                <input type="radio" id={option} disabled value={option} />
+                <label
+                  contenteditable="true"
+                  for={option}
+                  bind:textContent={option}>{option}</label>
+              </div>
+            {/each}
+          </form>
         {/if}
 
         {#if question.option.length === 0}
@@ -178,15 +194,34 @@ console.log(isAnswering);
           </select>
         {/if}
 
-        <button
-          type="button"
+        <svg
           on:click={() => {
             question.option = [...question.option, 'asdf'];
-          }}>New option</button>
+          }}
+          width="1em"
+          height="1em"
+          viewBox="0 0 16 16"
+          class="bi bi-node-plus"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            d="M11 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM6.025 7.5a5 5 0 1 1 0 1H4A1.5 1.5 0 0 1 2.5 10h-1A1.5 1.5 0 0 1 0 8.5v-1A1.5 1.5 0 0 1 1.5 6h1A1.5 1.5 0 0 1 4 7.5h2.025zM11 5a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2h-2a.5.5 0 0 1 0-1h2v-2A.5.5 0 0 1 11 5zM1.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
+        </svg>
       {/if}
 
-      <button type="button" on:click={() => onDelete(question.id)}>Delete this
-        question</button>
+      <svg
+        on:click={() => onDelete(question.id)}
+        width="1em"
+        height="1em"
+        viewBox="0 0 16 16"
+        class="bi bi-trash-fill"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill-rule="evenodd"
+          d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z" />
+      </svg>
     {/if}
   </div>
 </template>

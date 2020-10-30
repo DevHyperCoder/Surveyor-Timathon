@@ -76,6 +76,39 @@
   }
 </script>
 
+<style>
+    
+  div {
+    width: 75%;
+    margin: auto;
+  }
+
+@media screen and (max-width:1200px){
+  div{
+    width: 85%;
+  }
+}
+
+@media screen and (max-width:750px){
+  div{
+    width: 95%;
+  }
+}
+button{
+background-color: var(--primary-purple);
+
+  font-weight: 500;
+  margin-top: 1rem;
+  padding: .8rem;
+  width: 100%;
+}
+.response-btn{
+  background: var(--white);
+  border-radius: 20px;
+}
+
+</style>
+
 <template>
   {#if id}
     {#await isLoad then responseViewas}
@@ -89,6 +122,9 @@
             answer={a.A.answerText} />
         {/if}
       {/each}
+
+      <button on:click={$redirect(`/response/${surveyId}`)}>View all responses</button>
+
     {/await}
   {:else}
     {#await responseDoc}
@@ -99,6 +135,7 @@
       {:else}
         {#each docList as doc}
           <button
+          class="response-btn"
             on:click={() => {
               $redirect(`/response/${surveyId}?id=${doc.docId}`);
               id = doc.docId;

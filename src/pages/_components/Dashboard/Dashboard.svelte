@@ -3,10 +3,14 @@
 
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
-
+  import type { ISurveyList } from "../../../types/ISurvey";
   import { getSurveysByEmail, docListToSurveyList } from "../../../DB/Survey";
+  import Survey from "../Survey.svelte";
+  import SurveyList from "../SurveyList.svelte";
 
-  let surveysOfCurrentUser = getAllSurveysOfCurrentUser();
+  let surveysOfCurrentUser: Promise<
+    ISurveyList[]
+  > = getAllSurveysOfCurrentUser();
 
   async function getAllSurveysOfCurrentUser() {
     const uEmail = userObj.email;
@@ -16,6 +20,7 @@
     const docs = await getSurveysByEmail(uEmail);
     return docListToSurveyList(docs);
   }
+
   async function showAllSurveys() {
     const uEmail = userObj.email;
     if (uEmail === undefined || uEmail === "") {
@@ -28,18 +33,31 @@
 </script>
 
 <style>
+  
+
+  h6 {
+    font-size: 1.2rem;
+  }
+  p {
+    font-weight: 500;
+  }
+
+  button {
+    background: var(--primary-purple);
+    padding: 0.8rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    font-style: 1.3rem;
+  }
 </style>
 
 <template>
-  <p>Hi! {userObj.displayName}</p>
-  {#await surveysOfCurrentUser}
-    <p>getting ur surveys!!</p>
-  {:then surveys}
-    {#each surveys as survey}
-      <p>{survey.surveyTitle}</p>
-      <a href={`/view/${survey.surveyId}`}>go to survey</a>
-    {/each}
-    <button on:click={() => (surveysOfCurrentUser = showAllSurveys())}>Show all
-      surveys that you have</button>
-  {/await}
+    <h6>Hi! {userObj.displayName}</h6>
+    {#await surveysOfCurrentUser}
+      <p>getting ur surveys!!</p>
+    {:then surveys}
+      <SurveyList {surveys} />
+      <button on:click={() => (surveysOfCurrentUser = showAllSurveys())}>Show
+        all surveys that you have</button>
+    {/await}
 </template>

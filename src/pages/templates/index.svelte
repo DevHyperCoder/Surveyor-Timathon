@@ -1,6 +1,9 @@
 <script lang="ts">
   import { user } from "../../store";
   import { db } from "../../firebase";
+  import type { ISurveyList } from "../../types/ISurvey";
+  import Survey from "../_components/Survey.svelte";
+  import SurveyList from "../_components/SurveyList.svelte";
 
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
@@ -12,28 +15,22 @@
     }
   }
 
-  let templates: Promise<ITemplate[]> = getTemplates();
- 
-  let newSurveyId:string;
+  let templates: Promise<ISurveyList[]> = getTemplates();
+
+  let newSurveyId: string;
 
   let showTemplateBtn = { id: "", show: false };
 
-
-  interface ITemplate {
-    title: string;
-    id: string;
-  }
-
   async function getTemplates() {
-    let templates: ITemplate[] = [];
+    let templates: ISurveyList[] = [];
     if (!userObj) return;
     console.log(`Getting all templates`);
     const templateList = await db
       .collection("templates")
       .doc(userObj.uid)
       .get();
-    const templatesData: { surveys: ITemplate[] } = templateList.data() as {
-      surveys: ITemplate[];
+    const templatesData: { surveys: ISurveyList[] } = templateList.data() as {
+      surveys: ISurveyList[];
     };
 
     templatesData.surveys.forEach((template) => {
@@ -42,8 +39,8 @@
 
     return templates;
   }
-  
-   async function makeNewSurveyWithTemplate(id: string, title: string) {
+
+  async function makeNewSurveyWithTemplate(id: string) {
     const survey = await db.collection("surveys").add({
       created_by: userObj.email,
     });
@@ -81,16 +78,12 @@
   {#await templates}
     <p>loading your templates</p>
   {:then templates}
-    {#each templates as template}
-      <p>{template.id}</p>
-      <p>{template.title}</p>
-      <button
-        on:click={() => makeNewSurveyWithTemplate(template.id, template.title)}>Use
-        this template</button>
-      {#if showTemplateBtn.id === template.id && showTemplateBtn.show === true}
-        <a href={`/view/${newSurveyId}`}>Go to new survey</a>
-      {/if}
-    {/each}
+    <SurveyList
+      {showTemplateBtn}
+      onUseButtonClick={makeNewSurveyWithTemplate}
+      surveys={templates}
+      {newSurveyId}
+      template={true} />
   {:catch}
     <p>Hmmm.... I guess we ran into a error?</p>
   {/await}

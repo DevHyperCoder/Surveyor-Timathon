@@ -25,11 +25,9 @@
 
 <style>
   .bg {
-    width: 100vw;
-    background-image: url("/images/login-bg.png");
+    width: 100%;
   }
   section {
-    width: 1400px;
     margin: auto;
     color: black;
     display: flex;
@@ -46,7 +44,7 @@
   .img-container h1 {
     padding-top: 1.5rem;
     font-size: 2.2rem;
-    text-align: left;
+    text-align: center;
   }
   .img-container h1::first-letter {
     color: aliceblue;
@@ -65,6 +63,9 @@
     }
     section {
       width: 100%;
+    }
+    .img-container{
+      display: none;
     }
   }
 </style>

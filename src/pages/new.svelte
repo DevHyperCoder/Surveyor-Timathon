@@ -105,24 +105,19 @@
 
 <style>
   button {
-    background-color: black;
+    background-color: var(--primary-purple);
     padding: 1rem 2rem 1rem;
     margin-top: 1rem;
-    color: white;
+    color: var(--black);
   }
-  #center {
-    width: 50%;
-    margin: auto;
-  }
-
   a {
-    color: white;
+    color: var(--black);
     text-decoration: none;
   }
+
 </style>
 
 <template>
-  <div id="center">
     <div class="title-container">
       <label for="survey-title">Title</label>
       <input bind:value={surveyTitle} type="text" id="survey-title" />
@@ -134,7 +129,7 @@
         <Question
           onEdit={(q) => handleEdit(q)}
           isAnswering={false}
-            onDelete={(id) => onDelete(id)}
+          onDelete={(id) => onDelete(id)}
           {question} />
       {/each}
     {:else}
@@ -143,5 +138,4 @@
     <button on:click={addToQuestionList}>+</button>
     <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others
     </a>
-  </div>
 </template>
