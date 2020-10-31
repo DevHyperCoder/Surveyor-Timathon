@@ -16,16 +16,33 @@
 
   // State
   let surveyTitle: string;
+  let description: string;
   let surveyId: string;
 
   $: {
     surveyTitle;
-    console.log(surveyTitle);
     updateTitle(surveyTitle);
   }
-  let updateTitleCall;
+
+  $: {
+    description;
+    updateDescription(description);
+  }
+
+  let updateTitleCall: boolean;
+
+  async function updateDescription(description: string) {
+    if (surveyId) {
+      await db
+        .collection("surveys")
+        .doc(surveyId)
+        .set({ description }, { merge: true });
+
+      return;
+    }
+  }
+
   async function updateTitle(surveyTitle: string) {
-    console.log(surveyId, surveyTitle);
     if (surveyId) {
       updateTitleCall = false;
       db.collection("surveys")
@@ -114,28 +131,52 @@
     color: var(--black);
     text-decoration: none;
   }
-
+  article {
+    background-color: var(--white);
+    border-radius: 30px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  article input {
+    display: block;
+  }
+  #s-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+  #s-desc {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
 </style>
 
 <template>
-    <div class="title-container">
-      <label for="survey-title">Title</label>
-      <input bind:value={surveyTitle} type="text" id="survey-title" />
-    </div>
+  <article>
+    <input
+      id="s-title"
+      bind:value={surveyTitle}
+      type="text"
+      placeholder={surveyTitle ? '' : 'Survey Title'} />
+    <input
+      id="s-desc"
+      type="text"
+      placeholder={description ? '' : 'Survey Description'}
+      bind:value={description} />
+  </article>
 
-    <!-- FOR EACH LOOP -->
-    {#if questions}
-      {#each questions as question}
-        <Question
-          onEdit={(q) => handleEdit(q)}
-          isAnswering={false}
-          onDelete={(id) => onDelete(id)}
-          {question} />
-      {/each}
-    {:else}
-      <p>Create a new question!</p>
-    {/if}
-    <button on:click={addToQuestionList}>+</button>
-    <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others
-    </a>
+  <!-- FOR EACH LOOP -->
+  {#if questions}
+    {#each questions as question}
+      <Question
+        onEdit={(q) => handleEdit(q)}
+        isAnswering={false}
+        onDelete={(id) => onDelete(id)}
+        {question} />
+    {/each}
+  {:else}
+    <p>Create a new question!</p>
+  {/if}
+  <button on:click={addToQuestionList}>+</button>
+  <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others
+  </a>
 </template>

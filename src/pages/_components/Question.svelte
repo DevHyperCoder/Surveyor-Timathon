@@ -11,11 +11,6 @@
     | ((question: IQuestion, isAnswering: boolean) => any);
   export let onAnswer: undefined | ((text: string | number) => any);
   export let onDelete: undefined | ((id: string) => any);
-  console.log(isAnswering);
-
-  if (question && !question.text) {
-    question.text = "Enter your question here";
-  }
 
   let timer: number;
   $: {
@@ -98,6 +93,14 @@
   h2 {
     margin-bottom: 0.8rem;
   }
+
+  #q-text {
+    font-weight: 500;
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
   .question * {
     margin-bottom: 0.2rem;
   }
@@ -153,7 +156,10 @@
       <p>{answer}</p>
     {:else}
       <!-- Choices -->
-      <h2 contenteditable bind:textContent={question.text} />
+      <input
+        id="q-text"
+        bind:value={question.text}
+        placeholder={question.text ? '' : 'Question Text'} />
       <select bind:value={question.type}>
         <option value="mcq" default>MCQ</option>
         <option value="sh-a">Short Answer</option>

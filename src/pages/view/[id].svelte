@@ -206,8 +206,6 @@
 </script>
 
 <style>
-  
-
   a {
     text-decoration: none;
     color: white;
@@ -221,84 +219,90 @@
     padding: 1rem;
     margin-bottom: 1rem;
   }
-
-  article h2 {
+  article input {
+    display: block;
+  }
+  #s-title {
     font-size: 1.3rem;
     font-weight: 500;
   }
-  article p {
+  #s-desc {
     font-size: 1.2rem;
     font-weight: 500;
   }
 </style>
 
 <template>
-    <article>
-      {#if surveyDocData}
-        {#if !canAnswer(userObj, surveyDocData)}
-          <h2
-            contenteditable="true"
-            bind:textContent={surveyDocData.surveyTitle} />
-          <p
-            contenteditable="true"
-            bind:textContent={surveyDocData.description} />
-        {:else}
-          <h2>{surveyDocData.surveyTitle}</h2>
-          <p>{surveyDocData.description}</p>
-        {/if}
+  <article>
+    {#if surveyDocData}
+      {#if !canAnswer(userObj, surveyDocData)}
+        <input
+          id="s-title"
+          bind:value={surveyDocData.surveyTitle}
+          type="text"
+          placeholder={surveyDocData.surveyTitle ? '' : 'Survey Title'} />
+        <input
+          id="s-desc"
+          type="text"
+          placeholder={surveyDocData.description ? '' : 'Survey Description'}
+          bind:value={surveyDocData.description} />
+      {:else}
+        <h2>{surveyDocData.surveyTitle}</h2>
+        <p>{surveyDocData.description}</p>
       {/if}
-    </article>
-    {#await questions}
-      <p>loading</p>
-    {:then questions}
-      <form>
-        {#each questions as question}
-          <Question
-            onAnswer={(text) => handleAnswer(question.id, text)}
-            onEdit={(q) => handleEdit(q)}
-            onDelete={(id) => onDelete(id)}
-            {question}
-            isAnswering={canAnswer(userObj, surveyDocData)} />
-        {/each}
-        {#if canAnswer(userObj, surveyDocData)}
-          {#if !userObj || userObj.isAnonymous}
-            <input
-              type="text"
-              required={true}
-              placeholder="Enter your name"
-              bind:value={userName} />
-          {/if}
-          <button on:click={submitSurvey} type="submit">Submit this quiz</button>
-        {:else}
+    {/if}
+  </article>
+  {#await questions}
+    <p>loading</p>
+  {:then questions}
+    <form>
+      {#each questions as question}
+        <Question
+          onAnswer={(text) => handleAnswer(question.id, text)}
+          onEdit={(q) => handleEdit(q)}
+          onDelete={(id) => onDelete(id)}
+          {question}
+          isAnswering={canAnswer(userObj, surveyDocData)} />
+      {/each}
+      {#if canAnswer(userObj, surveyDocData)}
+        {#if !userObj || userObj.isAnonymous}
+          <input
+            type="text"
+            required={true}
+            placeholder="Enter your name"
+            bind:value={userName} />
+        {/if}
+        <button on:click={submitSurvey} type="submit">Submit this quiz</button>
+      {:else}
+        <svg
+          on:click={addToQuestionList}
+          width="1em"
+          height="1em"
+          viewBox="0 0 16 16"
+          class="bi bi-plus-circle-fill"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+        </svg>
+
+        <a href={`/response/${id}`}>See responses</a>
+        {#if userObj}
           <svg
-            on:click={addToQuestionList}
             width="1em"
+            on:click={() => makeToTemplate()}
             height="1em"
             viewBox="0 0 16 16"
-            class="bi bi-plus-circle-fill"
+            class="bi bi-file-earmark-fill"
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
             <path
               fill-rule="evenodd"
-              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+              d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0H4zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z" />
           </svg>
-
-          <a href={`/response/${id}`}>See responses</a>
-          {#if userObj}
-            <svg
-              width="1em"
-              on:click={() => makeToTemplate()}
-              height="1em"
-              viewBox="0 0 16 16"
-              class="bi bi-file-earmark-fill"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                fill-rule="evenodd"
-                d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0H4zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z" />
-            </svg>
-          {/if}
         {/if}
-      </form>
-    {/await}
+      {/if}
+    </form>
+  {/await}
 </template>
