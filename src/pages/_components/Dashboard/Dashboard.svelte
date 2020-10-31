@@ -42,7 +42,7 @@
     display: block;
     width: 100%;
     padding: 0.2rem;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
   }
 
   button {
@@ -50,13 +50,27 @@
     background-color: var(--primary-purple);
     font-size: 1.5rem;
     border-radius: 0.2rem;
+    text-align: right;
   }
 
-  h6 {
+  p {
     font-size: 1.2rem;
   }
   p {
     font-weight: 500;
+  }
+
+  article {
+    margin: 1rem 0;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+
+  input {
+    margin-top: 1px;
   }
 
   button {
@@ -69,10 +83,10 @@
 </style>
 
 <template>
-  <h6>Hi! {userObj.displayName}</h6>
+  <p>Hi! {userObj.displayName}</p>
 
   <article>
-    <h3>Have a survey code? Enter it here!</h3>
+    <h3>Have a survey code?</h3>
     <input
       type="text"
       bind:value={surveyID}

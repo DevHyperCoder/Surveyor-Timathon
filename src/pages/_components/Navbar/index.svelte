@@ -23,7 +23,6 @@
 
 <style>
   nav {
-    background-color: var(--primary-red);
     overflow: hidden;
     margin: 0;
     padding-top: 0.5rem;
@@ -35,24 +34,31 @@
     padding: 0;
     display: flex;
     align-items: center;
+    justify-content: space-evenly;
     flex-direction: row;
   }
   nav li {
     text-align: left;
   }
-  nav a {
-    float: left;
-    /* display: block; */
+  nav a,
+  nav button {
     margin-left: 20px;
+  }
+  nav a {
+    /* display: block; */
     color: var(--primary-font-color);
     font-size: 1.5rem;
     text-decoration: none;
   }
   button {
-    background-color: aquamarine;
+    padding: 0.3rem;
+    border-radius: 0.2rem;
+    background-color: #4285f4;
     color: black;
   }
-svg{display: none;}
+  svg {
+    display: none;
+  }
   @media screen and (max-width: 600px) {
     nav ul li:not(:first-child) {
       display: none;
@@ -82,21 +88,21 @@ svg{display: none;}
     .responsive ul {
       flex-direction: column;
     }
-    .responsive ul :hover {
-      background-color: #a2a2a2;
-    }
+  }
+  #hero {
+    font-weight: 500;
+    font-size: 2.2rem;
   }
 </style>
 
 <template>
   <nav class:responsive={isResponsive}>
     <ul>
-      <li><a href="/"> Surveyor </a></li>
+      <li><a id="hero" href="/"> Surveyor </a></li>
       {#if userObj}
         <li><a href="/new">New</a></li>
         <li><a href="/templates">Your Templates</a></li>
         <li><a href="/features">Features</a></li>
-        <li>{userObj.displayName}</li>
         <li>
           <button
             on:click={() => {

@@ -46,7 +46,9 @@ textarea {
   border: none;
   border-radius: 0;
 }
-
+button {
+  cursor: pointer;
+}
 .parent-height-100 {
   height: 100%;
 }

@@ -1,5 +1,5 @@
 <script lang="typescript">
-  import { params } from "@sveltech/routify";
+  import { goto, params } from "@sveltech/routify";
   const { surveyId } = $params;
   let { id } = $params;
   import { getSurveyQuestions } from "../../DB/Survey";
@@ -7,7 +7,7 @@
 
   import { redirect } from "@sveltech/routify";
   import { db } from "../../firebase";
-  import type { IAnswer, IResponse } from "../../types/IAnswer";
+  import type { IAnswer } from "../../types/IAnswer";
   import type { IQuestion } from "../../types/IQuestion";
   import Question from "../_components/Question.svelte";
 
@@ -15,9 +15,12 @@
     firebase.firestore.DocumentData[]
   > = getResponseDocument(surveyId);
   let isLoad: Promise<[{ Q: IQuestion; A: IAnswer }]>;
+
   $: {
     id;
-    isLoad = getQnAPair(id);
+    if (id) {
+      isLoad = getQnAPair(id);
+    }
   }
 
   import { user } from "../../store";
@@ -77,36 +80,18 @@
 </script>
 
 <style>
-    
-  div {
-    width: 75%;
-    margin: auto;
+  button {
+    background-color: var(--primary-purple);
+
+    font-weight: 500;
+    margin-top: 1rem;
+    padding: 0.8rem;
+    width: 100%;
   }
-
-@media screen and (max-width:1200px){
-  div{
-    width: 85%;
+  .response-btn {
+    background: var(--white);
+    border-radius: 20px;
   }
-}
-
-@media screen and (max-width:750px){
-  div{
-    width: 95%;
-  }
-}
-button{
-background-color: var(--primary-purple);
-
-  font-weight: 500;
-  margin-top: 1rem;
-  padding: .8rem;
-  width: 100%;
-}
-.response-btn{
-  background: var(--white);
-  border-radius: 20px;
-}
-
 </style>
 
 <template>
@@ -123,8 +108,11 @@ background-color: var(--primary-purple);
         {/if}
       {/each}
 
-      <button on:click={$redirect(`/response/${surveyId}`)}>View all responses</button>
-
+      <button
+        on:click={() => {
+          id = '';
+          $redirect(`/response/${surveyId}`);
+        }}>View all responses</button>
     {/await}
   {:else}
     {#await responseDoc}
@@ -135,7 +123,7 @@ background-color: var(--primary-purple);
       {:else}
         {#each docList as doc}
           <button
-          class="response-btn"
+            class="response-btn"
             on:click={() => {
               $redirect(`/response/${surveyId}?id=${doc.docId}`);
               id = doc.docId;

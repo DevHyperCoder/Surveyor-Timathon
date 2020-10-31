@@ -217,7 +217,9 @@
     background-color: var(--white);
     border-radius: 30px;
     padding: 1rem;
+    margin-top: 1rem;
     margin-bottom: 1rem;
+    box-shadow: 2px 2px 2px #ccc;
   }
   article input {
     display: block;

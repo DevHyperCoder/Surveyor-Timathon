@@ -45,7 +45,7 @@
 
   $: {
     mcqTemplate;
-    if (!isAnswering && question.option === []) {
+    if (!isAnswering && question && question.option === []) {
       switch (mcqTemplate) {
         case "rating-num":
           if (question.text === "") {
@@ -89,6 +89,7 @@
     margin: 1rem 0;
     border-radius: 30px;
     padding: 0.8rem;
+    box-shadow: 2px 2px 2px #ccc;
   }
   h2 {
     margin-bottom: 0.8rem;
@@ -191,7 +192,7 @@
           </form>
         {/if}
 
-        {#if question.option.length === 0}
+        {#if question.option && question.option.length === 0}
           <select bind:value={mcqTemplate}>
             <option value="rating-num">Rating with number</option>
             <option value="rating-satisfied">Rating with satisfaction</option>

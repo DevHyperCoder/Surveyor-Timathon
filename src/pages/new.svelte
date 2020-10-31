@@ -25,7 +25,7 @@
   let description: string;
   let surveyId: string;
   let updateTitleCall: boolean;
-  
+
   // Reactive state
   $: {
     surveyTitle;
@@ -69,7 +69,7 @@
         updateTitle(surveyTitle);
       }
     }
-    
+
     // Add the question to the list
     let arrlen = questions.length.toString();
     questions = [
@@ -129,7 +129,8 @@
 </script>
 
 <style>
-  button, a {
+  button,
+  a {
     background-color: var(--primary-purple);
     padding: 1rem 2rem 1rem;
     margin-top: 1rem;
@@ -142,6 +143,7 @@
     background-color: var(--white);
     border-radius: 30px;
     padding: 1rem;
+    margin-top: 1rem;
     margin-bottom: 1rem;
   }
   article input {

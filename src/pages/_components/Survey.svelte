@@ -11,7 +11,6 @@
   p {
     font-weight: 500;
   }
-
   a {
     color: var(--black);
     text-decoration: none;
@@ -21,6 +20,7 @@
     border-radius: 15px;
     background: var(--white);
     padding: 0.8rem;
+    box-shadow: 2px 2px 2px #ccc;
   }
 </style>
 
