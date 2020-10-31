@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import CTAButton from "../CTAButton/index.svelte";
 
   import { redirect } from "@sveltech/routify";
@@ -6,6 +6,12 @@
   import { metatags } from "@sveltech/routify";
   metatags.title = "Surveyor";
   metatags.description = "Quick and easy surveys";
+
+  let surveyID;
+
+  function redirectToViewPage(surveyId: string) {
+    $redirect(`view/${surveyID}`);
+  }
 
   function redirectToLogin() {
     $redirect("/login");
@@ -53,6 +59,22 @@
       font-size: 5rem;
     }
   }
+
+input {
+  display: block;
+  width: 100%;
+  padding: 0.2rem;
+  font-size: 1.3rem;
+}
+
+button{
+  padding: 0.8rem;
+  background-color: var(--primary-purple);
+  font-size: 1.5rem
+  ;
+  border-radius: .2rem;
+}
+
 </style>
 
 <template>
@@ -60,5 +82,11 @@
     <h1>Surveyor</h1>
     <h2>Online platform to take surveys easily and effciently</h2>
     <CTAButton onClick={redirectToLogin} Class="cta" value="Get Started" />
+
+    <article>
+      <h3>Have a survey code? Enter it here!</h3>
+      <input type="text" bind:value={surveyID} placeholder={'Enter the survey code'} />
+      <button on:click={()=>{redirectToViewPage(surveyID)}}>Go to Survey</button>
+    </article>
   </div>
 </template>

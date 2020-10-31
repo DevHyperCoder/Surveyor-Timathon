@@ -7,6 +7,7 @@
   import { getSurveysByEmail, docListToSurveyList } from "../../../DB/Survey";
   import Survey from "../Survey.svelte";
   import SurveyList from "../SurveyList.svelte";
+  import { redirect } from "@sveltech/routify";
 
   let surveysOfCurrentUser: Promise<
     ISurveyList[]
@@ -30,10 +31,26 @@
 
     return docListToSurveyList(docs);
   }
+  let surveyID;
+  function redirectToViewPage(surveyId: string) {
+    $redirect(`view/${surveyID}`);
+  }
 </script>
 
 <style>
-  
+  input {
+    display: block;
+    width: 100%;
+    padding: 0.2rem;
+    font-size: 1.3rem;
+  }
+
+  button {
+    padding: 0.8rem;
+    background-color: var(--primary-purple);
+    font-size: 1.5rem;
+    border-radius: 0.2rem;
+  }
 
   h6 {
     font-size: 1.2rem;
@@ -52,12 +69,25 @@
 </style>
 
 <template>
-    <h6>Hi! {userObj.displayName}</h6>
-    {#await surveysOfCurrentUser}
-      <p>getting ur surveys!!</p>
-    {:then surveys}
-      <SurveyList {surveys} />
-      <button on:click={() => (surveysOfCurrentUser = showAllSurveys())}>Show
-        all surveys that you have</button>
-    {/await}
+  <h6>Hi! {userObj.displayName}</h6>
+
+  <article>
+    <h3>Have a survey code? Enter it here!</h3>
+    <input
+      type="text"
+      bind:value={surveyID}
+      placeholder={'Enter the survey code'} />
+    <button
+      on:click={() => {
+        redirectToViewPage(surveyID);
+      }}>Go to Survey</button>
+  </article>
+
+  {#await surveysOfCurrentUser}
+    <p>getting ur surveys!!</p>
+  {:then surveys}
+    <SurveyList {surveys} />
+    <button on:click={() => (surveysOfCurrentUser = showAllSurveys())}>Show all
+      surveys that you have</button>
+  {/await}
 </template>

@@ -8,17 +8,25 @@
 
   // User store
   import { user } from "../store";
+  import { redirect } from "@sveltech/routify";
 
   let questions: IQuestion[] = [];
 
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
 
+  // Redirect to home page if user is not signed in
+  if (!userObj) {
+    $redirect("/");
+  }
+
   // State
   let surveyTitle: string;
   let description: string;
   let surveyId: string;
-
+  let updateTitleCall: boolean;
+  
+  // Reactive state
   $: {
     surveyTitle;
     updateTitle(surveyTitle);
@@ -28,8 +36,6 @@
     description;
     updateDescription(description);
   }
-
-  let updateTitleCall: boolean;
 
   async function updateDescription(description: string) {
     if (surveyId) {
@@ -63,6 +69,8 @@
         updateTitle(surveyTitle);
       }
     }
+    
+    // Add the question to the list
     let arrlen = questions.length.toString();
     questions = [
       ...questions,
@@ -121,14 +129,13 @@
 </script>
 
 <style>
-  button {
+  button, a {
     background-color: var(--primary-purple);
     padding: 1rem 2rem 1rem;
     margin-top: 1rem;
     color: var(--black);
   }
   a {
-    color: var(--black);
     text-decoration: none;
   }
   article {
@@ -179,4 +186,6 @@
   <button on:click={addToQuestionList}>+</button>
   <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others
   </a>
+  <p>Survey Code:</p>
+  <code>{surveyId}</code>
 </template>
