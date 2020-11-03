@@ -9,14 +9,14 @@
   import { auth, googleProvider } from "../../../firebase";
   import { onDestroy } from "svelte";
 
+  let isResponsive = false;
+
   // Login function
   function login() {
     auth.signInWithPopup(googleProvider);
   }
-  let isResponsive = false;
 
   onDestroy(() => {
-    console.log("im getting destroyed");
     isResponsive = false;
   });
 </script>

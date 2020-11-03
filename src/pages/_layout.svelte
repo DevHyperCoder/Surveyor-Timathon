@@ -1,7 +1,8 @@
 <style>
-section {
+  section {
     width: 75%;
     margin: auto;
+    margin-bottom: 5rem;
   }
   @media screen and (max-width: 1200px) {
     section {

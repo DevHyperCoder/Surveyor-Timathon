@@ -4,13 +4,10 @@
   import { redirect } from "@sveltech/routify";
 
   import { metatags } from "@sveltech/routify";
-import SurveyCode from "../SurveyCode.svelte";
   metatags.title = "Surveyor";
   metatags.description = "Quick and easy surveys";
 
-  let surveyID;
-
-  
+  import SurveyCode from "../SurveyCode.svelte";
 
   function redirectToLogin() {
     $redirect("/login");
@@ -59,7 +56,7 @@ import SurveyCode from "../SurveyCode.svelte";
     }
   }
 
-  article{
+  article {
     margin-top: 8rem;
   }
 </style>
@@ -69,8 +66,8 @@ import SurveyCode from "../SurveyCode.svelte";
     <h1>Surveyor</h1>
     <h2>Online platform to take surveys easily and effciently</h2>
     <CTAButton onClick={redirectToLogin} Class="cta" value="Get Started" />
-<article>
-    <SurveyCode/>
-   </article> 
+    <article>
+      <SurveyCode />
+    </article>
   </div>
 </template>

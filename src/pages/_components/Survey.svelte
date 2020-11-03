@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { ISurveyList } from "../../types/ISurvey";
+
   export let template: boolean = false;
   export let onUseButtonClick: ((id: string) => any) | undefined;
   export let survey: ISurveyList;
-  export let showTemplateBtn: { id: string; show: boolean };
+  export let templateBtnStatus: { id: string; show: boolean };
   export let newSurveyId: string;
 </script>
 
@@ -30,7 +31,7 @@
     {#if template}
       <button on:click={() => onUseButtonClick(survey.surveyId)}>Use this
         template</button>
-      {#if showTemplateBtn.id === survey.surveyId && showTemplateBtn.show === true}
+      {#if templateBtnStatus.id === survey.surveyId && templateBtnStatus.show === true}
         <a href={`/view/${newSurveyId}`}>Go to new survey</a>
       {/if}
     {:else}<a href={`/view/${survey.surveyId}`}>go to survey</a>{/if}

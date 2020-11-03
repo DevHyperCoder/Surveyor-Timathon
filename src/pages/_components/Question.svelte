@@ -11,8 +11,8 @@
     | ((question: IQuestion, isAnswering: boolean) => any);
   export let onAnswer: undefined | ((text: string | number) => any);
   export let onDelete: undefined | ((id: string) => any);
-
   let timer: number;
+
   $: {
     question;
     debounceInput(question);

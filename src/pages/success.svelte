@@ -5,6 +5,8 @@
 
   import { user } from "../store";
 
+  import type { IFeedback } from "../types/IFeedback";
+
   let userObj: firebase.User;
 
   user.subscribe((u) => (userObj = u));
@@ -12,23 +14,17 @@
   let feedBackText: string;
   let ratingNum: string;
 
-  type IFeedback = {
-    text: string;
-    ratingNum: number;
-    userName?: string;
-  };
-
   async function submitFeedback() {
     const feedBack: IFeedback = {
       text: feedBackText,
       ratingNum: +ratingNum,
-      userName: getUName(),
+      userName: getUserName(),
     };
     db.collection("feedback").add(feedBack);
     $redirect("/");
   }
 
-  function getUName() {
+  function getUserName() {
     if (userObj) {
       return userObj.displayName;
     }

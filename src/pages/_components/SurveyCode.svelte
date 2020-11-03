@@ -3,7 +3,7 @@
 
   import { redirect } from "@sveltech/routify";
 
-  function redirectToViewPage(surveyId: string) {
+  function redirectToViewPage() {
     $redirect(`view/${surveyID}`);
   }
 </script>
@@ -26,7 +26,7 @@
     background: var(--white);
     border-radius: 1.2rem;
     margin: 1rem 0;
-    padding: .5rem;
+    padding: 0.8rem;
   }
 
   h3 {
@@ -56,7 +56,7 @@
       placeholder={'Enter the survey code'} />
     <button
       on:click={() => {
-        redirectToViewPage(surveyID);
+        redirectToViewPage();
       }}>Go to Survey</button>
   </article>
 </template>

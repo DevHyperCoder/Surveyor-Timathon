@@ -1,32 +1,39 @@
 <script lang="typescript">
-  import { goto, params } from "@sveltech/routify";
-  const { surveyId } = $params;
-  let { id } = $params;
+  import { params } from "@sveltech/routify";
+
   import { getSurveyQuestions } from "../../DB/Survey";
   import { getResponse } from "../../DB/Response";
 
   import { redirect } from "@sveltech/routify";
   import { db } from "../../firebase";
+
   import type { IAnswer } from "../../types/IAnswer";
   import type { IQuestion } from "../../types/IQuestion";
+
   import Question from "../_components/Question.svelte";
-
-  let responseDoc: Promise<
-    firebase.firestore.DocumentData[]
-  > = getResponseDocument(surveyId);
-  let isLoad: Promise<[{ Q: IQuestion; A: IAnswer }]>;
-
-  $: {
-    id;
-    if (id) {
-      isLoad = getQnAPair(id);
-    }
-  }
 
   import { user } from "../../store";
 
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
+
+  let error: string;
+
+  const { surveyId } = $params;
+  let { id } = $params;
+
+  let responseDoc: Promise<
+    firebase.firestore.DocumentData[]
+  > = getResponseDocument(surveyId);
+
+  let questionAnswerList: Promise<[{ Q: IQuestion; A: IAnswer }]>;
+
+  $: {
+    id;
+    if (id) {
+      questionAnswerList = getQnAPair(id);
+    }
+  }
 
   async function getQnAPair(id: string) {
     const questions = await getSurveyQuestions(surveyId);
@@ -43,7 +50,7 @@
 
     return responseView as [{ Q: IQuestion; A: IAnswer }];
   }
-  let error: string;
+
   async function getResponseDocument(surveyId: string) {
     const surveyDoc = await db.collection("surveys").doc(surveyId).get();
     if (!userObj) {
@@ -82,7 +89,6 @@
 <style>
   button {
     background-color: var(--primary-purple);
-
     font-weight: 500;
     margin-top: 1rem;
     padding: 0.8rem;
@@ -96,7 +102,7 @@
 
 <template>
   {#if id}
-    {#await isLoad then responseViewas}
+    {#await questionAnswerList then responseViewas}
       {#each responseViewas as a}
         {#if !a.A}
           <p>No Answer for this question :(</p>

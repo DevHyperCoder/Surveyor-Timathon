@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { ISurveyList } from "../../types/ISurvey";
   import Survey from "./Survey.svelte";
+
   export let surveys: ISurveyList[];
   export let template: boolean = false;
-  export let showTemplateBtn;
-  export let newSurveyId;
-  export let onUseButtonClick;
-  
+  export let templateBtnStatus: { id: string; show: boolean };
+  export let newSurveyId: string;
+  export let onUseButtonClick: ((id: string) => any) | undefined;
 </script>
 
 <style>
@@ -30,7 +30,7 @@
       <Survey
         {template}
         {survey}
-        {showTemplateBtn}
+        {templateBtnStatus}
         {newSurveyId}
         {onUseButtonClick} />
     {/each}

@@ -7,6 +7,11 @@
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import Question from "../_components/Question.svelte";
   import { formatQuestionObj } from "../../DB/Survey";
+
+  import { firestore } from "firebase/app";
+  import type { ISurveyList } from "../../types/ISurvey";
+  import CopySurveyCode from "../_components/CopySurveyCode.svelte";
+
   let userObj: firebase.User = auth.currentUser;
   user.subscribe((u) => (userObj = u));
 
@@ -15,6 +20,35 @@
   let surveyDocData: firebase.firestore.DocumentData;
 
   let answers: Map<string, string | number> = new Map();
+
+  let userName: string;
+  let userId: string;
+
+  let oldTitle: string, oldDescription: string;
+
+  $: {
+    surveyDocData;
+    if (surveyDocData) {
+      if (surveyDocData.surveyTitle != oldTitle) {
+        updateTitle(surveyDocData.surveyTitle);
+      }
+      if (surveyDocData.description != oldDescription) {
+        updateDescription(surveyDocData.description);
+      }
+    }
+  }
+
+  user.subscribe((u) => {
+    userObj = u;
+    if (userObj && !userObj.isAnonymous) userId = userObj.displayName;
+  });
+
+  $: {
+    userName;
+    if (!userObj || userObj.isAnonymous) {
+      userId = userName;
+    }
+  }
 
   getSurveyDocument();
 
@@ -59,22 +93,6 @@
     });
     return answersList;
   }
-  let userId: string;
-
-  user.subscribe((u) => {
-    userObj = u;
-    if (userObj && !userObj.isAnonymous) userId = userObj.displayName;
-  });
-
-  let userName: string;
-  
-  $: {
-    userName;
-    if (!userObj || userObj.isAnonymous) {
-      userId = userName;
-    }
-  }
-
   function submitSurvey() {
     // Create a IResponse Obj
     const response: IResponse = {
@@ -130,20 +148,6 @@
     }
   }
 
-  let oldTitle: string, oldDescription: string;
-
-  $: {
-    surveyDocData;
-    if (surveyDocData) {
-      if (surveyDocData.surveyTitle != oldTitle) {
-        updateTitle(surveyDocData.surveyTitle);
-      }
-      if (surveyDocData.description != oldDescription) {
-        updateDescription(surveyDocData.description);
-      }
-    }
-  }
-
   async function onDelete(qID: string) {
     const ID = +qID;
     if (ID < 0 || ID > questions.length) {
@@ -167,10 +171,6 @@
 
     questions = questions;
   }
-
-  import { firestore } from "firebase/app";
-  import type { ISurveyList } from "../../types/ISurvey";
-  import CopySurveyCode from "../_components/CopySurveyCode.svelte";
 
   async function makeToTemplate() {
     console.log(id);

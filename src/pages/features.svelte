@@ -13,9 +13,6 @@
     display: block;
   }
 
-  div {
-    margin-bottom: 10rem;
-  }
 </style>
 
 <template>

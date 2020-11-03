@@ -2,11 +2,16 @@
   import { user } from "../../store";
   import { db } from "../../firebase";
   import type { ISurveyList } from "../../types/ISurvey";
-  import Survey from "../_components/Survey.svelte";
   import SurveyList from "../_components/SurveyList.svelte";
 
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
+
+  let templates: Promise<ISurveyList[]> = getTemplates();
+
+  let newSurveyId: string;
+
+  let templateBtnStatus = { id: "", show: false };
 
   $: {
     userObj;
@@ -15,20 +20,15 @@
     }
   }
 
-  let templates: Promise<ISurveyList[]> = getTemplates();
-
-  let newSurveyId: string;
-
-  let showTemplateBtn = { id: "", show: false };
-
   async function getTemplates() {
     let templates: ISurveyList[] = [];
     if (!userObj) return;
-    console.log(`Getting all templates`);
+
     const templateList = await db
       .collection("templates")
       .doc(userObj.uid)
       .get();
+
     const templatesData: { surveys: ISurveyList[] } = templateList.data() as {
       surveys: ISurveyList[];
     };
@@ -56,6 +56,7 @@
       const question = a.data();
       newQuestions.push({ id, question });
     });
+
     for (let index = 0; index < newQuestions.length; index++) {
       const { id, question } = newQuestions[index];
 
@@ -66,7 +67,8 @@
         .doc(id)
         .set(question, { merge: true });
     }
-    showTemplateBtn = { id: id, show: true };
+
+    templateBtnStatus = { id: id, show: true };
   }
 </script>
 
@@ -79,7 +81,7 @@
     <p>loading your templates</p>
   {:then templates}
     <SurveyList
-      {showTemplateBtn}
+      {templateBtnStatus}
       onUseButtonClick={makeNewSurveyWithTemplate}
       surveys={templates}
       {newSurveyId}

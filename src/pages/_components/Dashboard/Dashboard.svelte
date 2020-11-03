@@ -3,8 +3,10 @@
 
   let userObj: firebase.User;
   user.subscribe((u) => (userObj = u));
+
   import type { ISurveyList } from "../../../types/ISurvey";
   import { getSurveysByEmail, docListToSurveyList } from "../../../DB/Survey";
+
   import SurveyList from "../SurveyList.svelte";
   import SurveyCode from "../SurveyCode.svelte";
 
@@ -30,11 +32,9 @@
 
     return docListToSurveyList(docs);
   }
-  let surveyID;
 </script>
 
 <style>
-
   button {
     padding: 0.8rem;
     background-color: var(--primary-purple);
