@@ -4,14 +4,13 @@
   import { redirect } from "@sveltech/routify";
 
   import { metatags } from "@sveltech/routify";
+import SurveyCode from "../SurveyCode.svelte";
   metatags.title = "Surveyor";
   metatags.description = "Quick and easy surveys";
 
   let surveyID;
 
-  function redirectToViewPage(surveyId: string) {
-    $redirect(`view/${surveyID}`);
-  }
+  
 
   function redirectToLogin() {
     $redirect("/login");
@@ -21,12 +20,12 @@
 <style>
   h1 {
     color: var(--primary-dark);
-    font-size: 10rem;
+    font-size: 6rem;
     margin: 0;
   }
   h2 {
     color: var(--primary-dark);
-    font-size: 2.4rem;
+    font-size: 1.4rem;
     margin-left: 8rem;
     width: 100%;
   }
@@ -44,7 +43,7 @@
       max-width: 900px;
     }
     h2 {
-      margin-left: 2rem;
+      margin-left: 1.3rem;
     }
   }
   @media only screen and (max-width: 640px) {
@@ -56,25 +55,13 @@
       margin: 0;
     }
     h1 {
-      font-size: 5rem;
+      font-size: 4rem;
     }
   }
 
-input {
-  display: block;
-  width: 100%;
-  padding: 0.2rem;
-  font-size: 1.3rem;
-}
-
-button{
-  padding: 0.8rem;
-  background-color: var(--primary-purple);
-  font-size: 1.5rem
-  ;
-  border-radius: .2rem;
-}
-
+  article{
+    margin-top: 8rem;
+  }
 </style>
 
 <template>
@@ -82,11 +69,8 @@ button{
     <h1>Surveyor</h1>
     <h2>Online platform to take surveys easily and effciently</h2>
     <CTAButton onClick={redirectToLogin} Class="cta" value="Get Started" />
-
-    <article>
-      <h3>Have a survey code? Enter it here!</h3>
-      <input type="text" bind:value={surveyID} placeholder={'Enter the survey code'} />
-      <button on:click={()=>{redirectToViewPage(surveyID)}}>Go to Survey</button>
-    </article>
+<article>
+    <SurveyCode/>
+   </article> 
   </div>
 </template>

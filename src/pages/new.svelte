@@ -9,6 +9,7 @@
   // User store
   import { user } from "../store";
   import { redirect } from "@sveltech/routify";
+  import CopySurveyCode from "./_components/CopySurveyCode.svelte";
 
   let questions: IQuestion[] = [];
 
@@ -188,6 +189,5 @@
   <button on:click={addToQuestionList}>+</button>
   <a target="_blank" href={`/view/${surveyId}`}>Share this survey with others
   </a>
-  <p>Survey Code:</p>
-  <code>{surveyId}</code>
+  <CopySurveyCode id={surveyId} />
 </template>

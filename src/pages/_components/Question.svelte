@@ -40,45 +40,6 @@
       }
     }
   }
-
-  let mcqTemplate: "likely" | "rating-num" | "rating-satisfaction" | "" = "";
-
-  $: {
-    mcqTemplate;
-    if (!isAnswering && question && question.option === []) {
-      switch (mcqTemplate) {
-        case "rating-num":
-          if (question.text === "") {
-            question.text = "On a scale of 1 to 5 how would you rate?";
-          }
-          question.option = [...question.option, "1", "2", "3", "4", "5"];
-          break;
-        case "rating-satisfaction":
-          if (question.text === "") {
-            question.text = "How much are you satisfied?";
-          }
-          question.option = [
-            ...question.option,
-            "Not at all satisfied",
-            "Somewhat satisfied",
-            "Nuetral",
-            "Highly satisfied",
-          ];
-          break;
-        case "likely":
-          if (question.text === "") {
-            question.text = "How likely are you ";
-          }
-          question.option = [
-            ...question.option,
-            "Not at all likely",
-            "Somewhat likely",
-            "Highly likely",
-          ];
-          break;
-      }
-    }
-  }
 </script>
 
 <style>
@@ -192,18 +153,9 @@
           </form>
         {/if}
 
-        {#if question.option && question.option.length === 0}
-          <select bind:value={mcqTemplate}>
-            <option value="rating-num">Rating with number</option>
-            <option value="rating-satisfied">Rating with satisfaction</option>
-            <option value="likely">likely</option>
-            <option value="" selected={true}>none</option>
-          </select>
-        {/if}
-
         <svg
           on:click={() => {
-            question.option = [...question.option, 'asdf'];
+            question.option = [...question.option, 'Option'];
           }}
           width="1em"
           height="1em"

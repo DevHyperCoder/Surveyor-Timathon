@@ -1,8 +1,5 @@
 <script lang="ts">
-import App from "../../App.svelte";
-
   import type { ISurveyList } from "../../types/ISurvey";
-import Dashboard from "./Dashboard/Dashboard.svelte";
   import Survey from "./Survey.svelte";
   export let surveys: ISurveyList[];
   export let template: boolean = false;

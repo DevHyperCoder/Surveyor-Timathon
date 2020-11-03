@@ -45,15 +45,14 @@
     margin-left: 20px;
   }
   nav a {
-    /* display: block; */
     color: var(--primary-font-color);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-decoration: none;
   }
   button {
     padding: 0.3rem;
     border-radius: 0.2rem;
-    background-color: #4285f4;
+    background-color: var(--primary-purple);
     color: black;
   }
   svg {
@@ -109,7 +108,14 @@
               auth.signOut();
             }}>Sign Out</button>
         </li>
-      {:else}<button on:click={login}>Sign in with google</button>{/if}
+      {:else}
+        <li><a href="/features">Features</a></li>
+      
+      
+      
+      <button on:click={login}>Sign in with google</button>{/if}
+
+
       <svg
         width="2rem"
         height="2rem"

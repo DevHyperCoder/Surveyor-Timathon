@@ -7,7 +7,6 @@
   import type { IAnswer, IResponse } from "../../types/IAnswer";
   import Question from "../_components/Question.svelte";
   import { formatQuestionObj } from "../../DB/Survey";
-  import { async } from "rxjs";
   let userObj: firebase.User = auth.currentUser;
   user.subscribe((u) => (userObj = u));
 
@@ -16,11 +15,6 @@
   let surveyDocData: firebase.firestore.DocumentData;
 
   let answers: Map<string, string | number> = new Map();
-
-  $: {
-    answers;
-    console.log(answers);
-  }
 
   getSurveyDocument();
 
@@ -73,6 +67,7 @@
   });
 
   let userName: string;
+  
   $: {
     userName;
     if (!userObj || userObj.isAnonymous) {
@@ -122,7 +117,6 @@
     ];
   }
   async function updateTitle(surveyTitle: string) {
-    console.log(id, surveyTitle);
     if (id) {
       db.collection("surveys").doc(id).set({ surveyTitle }, { merge: true });
       return;
@@ -144,7 +138,7 @@
       if (surveyDocData.surveyTitle != oldTitle) {
         updateTitle(surveyDocData.surveyTitle);
       }
-      if (surveyDocData.desc != oldDescription) {
+      if (surveyDocData.description != oldDescription) {
         updateDescription(surveyDocData.description);
       }
     }
@@ -176,6 +170,7 @@
 
   import { firestore } from "firebase/app";
   import type { ISurveyList } from "../../types/ISurvey";
+  import CopySurveyCode from "../_components/CopySurveyCode.svelte";
 
   async function makeToTemplate() {
     console.log(id);
@@ -184,8 +179,6 @@
       return;
     }
     let title = surveyDocData.surveyTitle;
-
-    console.log(id, title);
 
     const s: ISurveyList = {
       surveyTitle: title,
@@ -223,6 +216,7 @@
   }
   article input {
     display: block;
+    width: 100%;
   }
   #s-title {
     font-size: 1.3rem;
@@ -231,6 +225,9 @@
   #s-desc {
     font-size: 1.2rem;
     font-weight: 500;
+  }
+  div {
+    margin-top: 1.5rem;
   }
 </style>
 
@@ -276,35 +273,39 @@
         {/if}
         <button on:click={submitSurvey} type="submit">Submit this quiz</button>
       {:else}
-        <svg
-          on:click={addToQuestionList}
-          width="1em"
-          height="1em"
-          viewBox="0 0 16 16"
-          class="bi bi-plus-circle-fill"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            fill-rule="evenodd"
-            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
-        </svg>
-
-        <a href={`/response/${id}`}>See responses</a>
-        {#if userObj}
+        <div>
           <svg
+            on:click={addToQuestionList}
             width="1em"
-            on:click={() => makeToTemplate()}
             height="1em"
             viewBox="0 0 16 16"
-            class="bi bi-file-earmark-fill"
+            class="bi bi-plus-circle-fill"
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
             <path
               fill-rule="evenodd"
-              d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0H4zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z" />
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
           </svg>
-        {/if}
+
+          <a href={`/response/${id}`}>See responses</a>
+        </div>
+      {/if}
+
+      {#if userObj}
+        <svg
+          width="1em"
+          on:click={() => makeToTemplate()}
+          height="1em"
+          viewBox="0 0 16 16"
+          class="bi bi-file-earmark-fill"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0H4zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z" />
+        </svg>
       {/if}
     </form>
+    <CopySurveyCode {id} />
   {/await}
 </template>

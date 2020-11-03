@@ -5,9 +5,8 @@
   user.subscribe((u) => (userObj = u));
   import type { ISurveyList } from "../../../types/ISurvey";
   import { getSurveysByEmail, docListToSurveyList } from "../../../DB/Survey";
-  import Survey from "../Survey.svelte";
   import SurveyList from "../SurveyList.svelte";
-  import { redirect } from "@sveltech/routify";
+  import SurveyCode from "../SurveyCode.svelte";
 
   let surveysOfCurrentUser: Promise<
     ISurveyList[]
@@ -32,18 +31,9 @@
     return docListToSurveyList(docs);
   }
   let surveyID;
-  function redirectToViewPage(surveyId: string) {
-    $redirect(`view/${surveyID}`);
-  }
 </script>
 
 <style>
-  input {
-    display: block;
-    width: 100%;
-    padding: 0.2rem;
-    font-size: 1.5rem;
-  }
 
   button {
     padding: 0.8rem;
@@ -60,19 +50,6 @@
     font-weight: 500;
   }
 
-  article {
-    margin: 1rem 0;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-    font-weight: 400;
-  }
-
-  input {
-    margin-top: 1px;
-  }
-
   button {
     background: var(--primary-purple);
     padding: 0.8rem;
@@ -85,17 +62,7 @@
 <template>
   <p>Hi! {userObj.displayName}</p>
 
-  <article>
-    <h3>Have a survey code?</h3>
-    <input
-      type="text"
-      bind:value={surveyID}
-      placeholder={'Enter the survey code'} />
-    <button
-      on:click={() => {
-        redirectToViewPage(surveyID);
-      }}>Go to Survey</button>
-  </article>
+  <SurveyCode />
 
   {#await surveysOfCurrentUser}
     <p>getting ur surveys!!</p>
