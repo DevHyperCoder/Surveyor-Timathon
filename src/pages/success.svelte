@@ -89,7 +89,7 @@
       </form>
       <button on:click={submitFeedback}>Submit your feedback</button>
     {:else}
-      <p>Thanks for attepting the survey</p>
+      <p>Thanks for attempting the survey</p>
     {/if}
   </div>
 </template>
