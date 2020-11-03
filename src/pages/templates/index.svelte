@@ -77,9 +77,7 @@
 
 <template>
   <h1>Your templates</h1>
-  {#await templates}
-    <p>loading your templates</p>
-  {:then templates}
+  {#await templates then templates}
     <SurveyList
       {templateBtnStatus}
       onUseButtonClick={makeNewSurveyWithTemplate}
@@ -87,6 +85,6 @@
       {newSurveyId}
       template={true} />
   {:catch}
-    <p>Hmmm.... I guess we ran into a error?</p>
+    <p>Either we ran into an error or you have no templates as of now</p>
   {/await}
 </template>
