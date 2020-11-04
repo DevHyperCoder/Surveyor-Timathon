@@ -59,6 +59,7 @@
   #q-text {
     font-weight: 500;
     font-size: 1.3rem;
+    width: 100%;
     margin-bottom: 0.8rem;
     display: block;
   }
@@ -81,6 +82,7 @@
           required={question.isRequired}
           bind:value={text}
           type="text"
+          placeholder="Enter your answer in less than 100 words"
           maxlength={100}
           id={question.id} />
       {:else if question.type === 'p'}
@@ -88,12 +90,14 @@
           required={question.isRequired}
           bind:value={text}
           type="text"
+          placeholder="Enter your answer here"
           id={question.id} />
       {:else if question.type === 'num'}
         <input
           required={question.isRequired}
           bind:value={text}
           type="number"
+          placeholder="Enter your answer as a number"
           id={question.id} />
       {:else if question.type === 'mcq'}
         {#if question.option === undefined || question.option.length <= 0}
