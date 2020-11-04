@@ -37,17 +37,20 @@
 
   async function getQnAPair(id: string) {
     const questions = await getSurveyQuestions(surveyId);
-    const reposone = await getResponse(id);
-    console.log(questions), reposone;
+    const response = await getResponse(id);
 
-    const responseView = [];
-    questions.forEach((q, i) => {
+    let responseView = [];
+    response.answers.forEach((a) => {
+      const question = questions.find((q) => q.id === a.questionId);
       responseView.push({
-        Q: q,
-        A: reposone.answers[i],
+        A: a,
+        Q: question,
       });
     });
 
+    responseView.sort((a, b) => {
+      return +a.Q.id - +b.Q.id;
+    });
     return responseView as [{ Q: IQuestion; A: IAnswer }];
   }
 
